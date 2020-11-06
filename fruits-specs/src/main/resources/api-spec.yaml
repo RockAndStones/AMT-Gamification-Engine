@@ -1,27 +1,27 @@
 openapi: '3.0.3'
 info:
   version: '0.1.0'
-  title: Fruits API
-  description: An API to demonstrate Swagger and Spring Boot
+  title: Gamification API
+  description: Description
 security:
   #  - bearerAuth: []
   - apiKeyAuth: []
 paths:
-  /fruits:
+  /events:
     post:
-      description: create a fruit
-      operationId: createFruit
+      description: create a user event
+      operationId: createEvent
       requestBody:
         content:
           'application/json':
             schema:
-              $ref: '#/components/schemas/Fruit'
+              $ref: '#/components/schemas/Event'
       responses:
         '201':
           description: created
     get:
-      description: get the list of all fruits
-      operationId: getFruits
+      description: get the list of all events
+      operationId: getEvents
       responses:
         '200':
           description: success
@@ -30,11 +30,11 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Fruit'
-  /fruits/{id}:
+                  $ref: '#/components/schemas/Event'
+  /events/{id}:
     get:
-      description: get one fruit, by id
-      operationId: getFruit
+      description: get one event, by id
+      operationId: getEvent
       parameters:
         - in: path
           name: id
@@ -47,7 +47,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/Fruit'
+                $ref: '#/components/schemas/Event'
 components:
   securitySchemes:
     #    bearerAuth:            # arbitrary name for the security scheme
@@ -59,7 +59,7 @@ components:
       in: header
       name: X-API-KEY
   schemas:
-    Fruit:
+    Event:
       type: object
       properties:
         kind:

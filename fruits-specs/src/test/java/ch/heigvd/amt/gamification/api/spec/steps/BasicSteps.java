@@ -4,7 +4,7 @@ import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.ApiException;
 import ch.heigvd.amt.gamification.ApiResponse;
 import ch.heigvd.amt.gamification.api.DefaultApi;
-import ch.heigvd.amt.gamification.api.dto.Fruit;
+import ch.heigvd.amt.gamification.api.dto.Event;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -22,7 +22,7 @@ public class BasicSteps {
     private Environment environment;
     private DefaultApi api;
 
-    Fruit fruit;
+    Event event;
 
     private ApiResponse lastApiResponse;
     private ApiException lastApiException;
@@ -30,21 +30,21 @@ public class BasicSteps {
     private int lastStatusCode;
 
     private String lastReceivedLocationHeader;
-    private Fruit lastReceivedFruit;
+    private Event lastReceivedEvent;
 
     public BasicSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
     }
 
-    @Given("there is a Fruits server")
-    public void there_is_a_Fruits_server() throws Throwable {
+    @Given("there is a Events server")
+    public void there_is_a_Events_server() throws Throwable {
         assertNotNull(api);
     }
 
-    @Given("I have a fruit payload")
-    public void i_have_a_fruit_payload() throws Throwable {
-        fruit = new ch.heigvd.amt.gamification.api.dto.Fruit()
+    @Given("I have a event payload")
+    public void i_have_a_event_payload() throws Throwable {
+        event = new ch.heigvd.amt.gamification.api.dto.Event()
           .kind("banana")
           .colour("yellow")
           .size("medium")
@@ -53,10 +53,10 @@ public class BasicSteps {
           .expirationDateTime(OffsetDateTime.now());
     }
 
-    @When("^I POST the fruit payload to the /fruits endpoint$")
-    public void i_POST_the_fruit_payload_to_the_fruits_endpoint() throws Throwable {
+    @When("^I POST the event payload to the /events endpoint$")
+    public void i_POST_the_event_payload_to_the_events_endpoint() throws Throwable {
         try {
-            lastApiResponse = api.createFruitWithHttpInfo(fruit);
+            lastApiResponse = api.createEventWithHttpInfo(event);
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
@@ -68,10 +68,10 @@ public class BasicSteps {
         assertEquals(expectedStatusCode, lastStatusCode);
     }
 
-    @When("^I send a GET to the /fruits endpoint$")
-    public void iSendAGETToTheFruitsEndpoint() {
+    @When("^I send a GET to the /events endpoint$")
+    public void iSendAGETToTheEventsEndpoint() {
         try {
-            lastApiResponse = api.getFruitsWithHttpInfo();
+            lastApiResponse = api.getEventsWithHttpInfo();
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
@@ -86,17 +86,17 @@ public class BasicSteps {
     public void iSendAGETToTheURLInTheLocationHeader() {
         Integer id = Integer.parseInt(lastReceivedLocationHeader.substring(lastReceivedLocationHeader.lastIndexOf('/') + 1));
         try {
-            lastApiResponse = api.getFruitWithHttpInfo(id);
+            lastApiResponse = api.getEventWithHttpInfo(id);
             processApiResponse(lastApiResponse);
-            lastReceivedFruit = (Fruit)lastApiResponse.getData();
+            lastReceivedEvent = (Event)lastApiResponse.getData();
         } catch (ApiException e) {
             processApiException(e);
         }
     }
 
-    @And("I receive a payload that is the same as the fruit payload")
-    public void iReceiveAPayloadThatIsTheSameAsTheFruitPayload() {
-        assertEquals(fruit, lastReceivedFruit);
+    @And("I receive a payload that is the same as the event payload")
+    public void iReceiveAPayloadThatIsTheSameAsTheEventPayload() {
+        assertEquals(event, lastReceivedEvent);
     }
 
     private void processApiResponse(ApiResponse apiResponse) {

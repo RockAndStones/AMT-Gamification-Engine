@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Data
-public class FruitEntity implements Serializable {
+public class EventEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
