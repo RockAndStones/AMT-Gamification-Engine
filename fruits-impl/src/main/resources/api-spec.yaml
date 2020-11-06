@@ -62,18 +62,12 @@ components:
     Event:
       type: object
       properties:
-        kind:
+        userId:
           type: string
-        colour:
-          type: string
-        size:
-          type: string
-        weight:
-          type: string
-        expirationDate:
-          type: string
-          format: date
-          nullable: false
-        expirationDateTime:
+        timestamp:
           type: string
           format: date-time
+        eventType:
+          type: string
+        eventProperties:
+          type: object

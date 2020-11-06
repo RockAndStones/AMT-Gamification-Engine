@@ -56,24 +56,19 @@ public class EventsApiController implements EventsApi {
 
     private EventEntity toEventEntity(Event event) {
         EventEntity entity = new EventEntity();
-        entity.setColour(event.getColour());
-        entity.setKind(event.getKind());
-        entity.setWeight(event.getWeight());
-        entity.setSize(event.getSize());
-        entity.setExpirationDate(event.getExpirationDate());
-        entity.setExpirationDateTime(event.getExpirationDateTime());
+        entity.setUserId(event.getUserId());
+        entity.setTimestamp(event.getTimestamp());
+        entity.setEventType(event.getEventType());
+//        entity.setEventProperties(event.getEventProperties());
         return entity;
     }
 
     private Event toEvent(EventEntity entity) {
         Event event = new Event();
-        event.setColour(entity.getColour());
-        event.setKind(entity.getKind());
-        event.setWeight(entity.getWeight());
-        event.setSize(entity.getSize());
-        event.setExpirationDate(entity.getExpirationDate());
-        OffsetDateTime dateTime = entity.getExpirationDateTime();
-        event.setExpirationDateTime(entity.getExpirationDateTime());
+        event.setUserId(entity.getUserId());
+        event.setTimestamp(entity.getTimestamp());
+        event.setEventType(entity.getEventType());
+//        event.setEventProperties(entity.getEventProperties());
         return event;
     }
 

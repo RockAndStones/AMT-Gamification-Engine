@@ -17,15 +17,10 @@ public class EventEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String kind;
-    private String size;
-    private String colour;
-    private String weight;
-
-    @Column(columnDefinition = "DATE")
-    private LocalDate expirationDate;
+    private String userId;
+    private String eventType;
+//    private Object eventProperties;
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private OffsetDateTime expirationDateTime;
-
+    private OffsetDateTime timestamp;
 }
