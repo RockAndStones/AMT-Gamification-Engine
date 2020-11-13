@@ -20,6 +20,8 @@ paths:
       responses:
         '201':
           description: created
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
     get:
       description: get the list of all badges
       operationId: getBadges
@@ -32,6 +34,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Badge'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
   /events:
     post:
       description: create a user event
@@ -44,6 +48,8 @@ paths:
       responses:
         '201':
           description: created
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
     get:
       description: get the list of all events
       operationId: getEvents
@@ -56,6 +62,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
   /events/{id}:
     get:
       description: get one event, by id
@@ -73,6 +81,27 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Event'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /application:
+    post:
+      description: create a new application
+      operationId: newApplication
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: New application created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Application'
 components:
   securitySchemes:
     #    bearerAuth:            # arbitrary name for the security scheme
@@ -83,6 +112,13 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+  responses:
+    UnauthorizedError:
+      description: API key is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
   schemas:
     Event:
       type: object
@@ -104,4 +140,11 @@ components:
         name:
           type: string
         description:
+          type: string
+    Application:
+      type: object
+      properties:
+        apiKey:
+          type: string
+        name:
           type: string
