@@ -7,6 +7,32 @@ security:
   #  - bearerAuth: []
   - apiKeyAuth: []
 paths:
+  /badges:
+    post:
+      description: create multiple badges for the website
+      operationId: createBadges
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Badge'
+      responses:
+        '201':
+          description: created
+    get:
+      description: get the list of all badges
+      operationId: getBadges
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Badge'
   /events:
     post:
       description: create a user event
@@ -71,3 +97,10 @@ components:
           type: string
         eventProperties:
           type: object
+    Badge:
+      type: object
+      properties:
+        badgeID:
+          type: string
+        name:
+          type: string
