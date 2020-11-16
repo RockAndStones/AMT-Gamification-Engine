@@ -10,12 +10,11 @@ paths:
   /badges:
     post:
       description: create multiple badges for the website
-      operationId: createBadges
+      operationId: createBadge
       requestBody:
         content:
           'application/json':
             schema:
-              items:
                 $ref: '#/components/schemas/Badge'
       responses:
         '201':
@@ -32,6 +31,23 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Badge'
+  /badges/{name}:
+    get:
+      description: get one badge, by name
+      operationId: getBadge
+      parameters:
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Badge'
   /events:
     post:
       description: create a user event
@@ -99,8 +115,6 @@ components:
     Badge:
       type: object
       properties:
-        badgeID:
-          type: string
         name:
           type: string
         description:
