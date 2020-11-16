@@ -40,6 +40,8 @@ paths:
     post:
       description: create a user event
       operationId: createEvent
+      parameters:
+        - $ref: '#/components/parameters/ApiKey'
       requestBody:
         content:
           'application/json':
@@ -53,6 +55,8 @@ paths:
     get:
       description: get the list of all events
       operationId: getEvents
+      parameters:
+        - $ref: '#/components/parameters/ApiKey'
       responses:
         '200':
           description: success
@@ -102,6 +106,7 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Application'
+
 components:
   securitySchemes:
     #    bearerAuth:            # arbitrary name for the security scheme
@@ -112,6 +117,14 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+  parameters:
+    ApiKey:
+      description: "Application api key"
+      name: "X-API-KEY"
+      in: header
+      required: true
+      schema:
+        type: string
   responses:
     UnauthorizedError:
       description: API key is missing or invalid
