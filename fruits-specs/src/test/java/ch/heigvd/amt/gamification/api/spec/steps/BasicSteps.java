@@ -1,5 +1,6 @@
 package ch.heigvd.amt.gamification.api.spec.steps;
 
+import ch.heigvd.amt.gamification.api.dto.Badge;
 import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.ApiException;
 import ch.heigvd.amt.gamification.ApiResponse;
@@ -23,6 +24,7 @@ public class BasicSteps {
     private DefaultApi api;
 
     Event event;
+    Badge badge;
 
     private ApiResponse lastApiResponse;
     private ApiException lastApiException;
@@ -31,14 +33,15 @@ public class BasicSteps {
 
     private String lastReceivedLocationHeader;
     private Event lastReceivedEvent;
+    private Badge lastReceivedBadge;
 
     public BasicSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
     }
 
-    @Given("there is a Events server")
-    public void there_is_a_Events_server() throws Throwable {
+    @Given("there is an Application server")
+    public void thereIsAApplicationServer() throws Throwable {
         assertNotNull(api);
     }
 
@@ -97,6 +100,44 @@ public class BasicSteps {
         assertEquals(event, lastReceivedEvent);
     }
 
+    @Given("I have a badge payload")
+    public void iHaveABadgePayload() {
+        badge = new ch.heigvd.amt.gamification.api.dto.Badge()
+                .name("MyTestBadge")
+                .description("This is my test badge");
+    }
+
+    @When("I POST the badge payload to the /badges endpoint$")
+    public void iPOSTTheBadgePayloadToTheBadgesEndpoint() {
+        try {
+            lastApiResponse = api.createBadgeWithHttpInfo(badge);
+            processApiResponse(lastApiResponse);
+        } catch (ApiException e) {
+            processApiException(e);
+        }
+    }
+
+    @When("I send a GET to the /badges endpoint$")
+    public void iSendAGETToTheBadgesEndpoint() {
+        try {
+            lastApiResponse = api.getBadgesWithHttpInfo();
+            processApiResponse(lastApiResponse);
+        } catch (ApiException e) {
+            processApiException(e);
+        }
+    }
+
+    @When("I send a GET to the /badge/\\{name} endpoint$")
+    public void iSendAGETToTheBadgeNameEndpoint() {
+        try {
+            lastApiResponse = api.getBadgeWithHttpInfo(badge.getName());
+            processApiResponse(lastApiResponse);
+            lastReceivedBadge = (Badge) lastApiResponse.getData();
+        } catch (ApiException e) {
+            processApiException(e);
+        }
+    }
+
     private void processApiResponse(ApiResponse apiResponse) {
         lastApiResponse = apiResponse;
         lastApiCallThrewException = false;
@@ -113,4 +154,8 @@ public class BasicSteps {
         lastStatusCode = lastApiException.getCode();
     }
 
+    @And("I receive a payload that is the same as the created badge payload")
+    public void iReceiveAPayloadThatIsTheSameAsTheCreatedBadgePayload() {
+        assertEquals(badge, lastReceivedBadge);
+    }
 }
