@@ -1,7 +1,7 @@
 Feature: Validation of date formats
 
   Background:
-    Given there is a Events server
+    Given there is an Application server
 
   Scenario: the expiration date and time are managed
     Given I have a event payload
