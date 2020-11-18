@@ -25,6 +25,9 @@ public class ApplicationEntity implements Serializable {
     @OneToMany
     private List<EventEntity> events;
 
+    @OneToMany
+    private List<BadgeEntity> badges;
+
     static public String generateApiKey() {
         return UUID.randomUUID().toString();
     }
