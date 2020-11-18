@@ -40,6 +40,10 @@ public class BadgesApiController implements BadgesApi {
         if (app == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
+        if (badge.getName() == null   || badge.getDescription() == null ||
+            badge.getName().isEmpty() || badge.getDescription().isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
         BadgeEntity newBadgeEntity = toBadgeEntity(badge);
         newBadgeEntity.setApp(app);
         badgeRepository.save(newBadgeEntity);
