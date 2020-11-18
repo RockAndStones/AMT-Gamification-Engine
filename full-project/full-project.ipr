@@ -45,9 +45,9 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/full-project.iml" filepath="$PROJECT_DIR$/full-project.iml" />
       <module fileurl="file://$PROJECT_DIR$/../gamification-impl/gamification-impl.iml" filepath="$PROJECT_DIR$/../gamification-impl/gamification-impl.iml" />
       <module fileurl="file://$PROJECT_DIR$/../gamification-specs/gamification-specs.iml" filepath="$PROJECT_DIR$/../gamification-specs/gamification-specs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/full-project.iml" filepath="$PROJECT_DIR$/full-project.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
