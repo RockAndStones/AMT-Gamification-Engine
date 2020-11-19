@@ -9,8 +9,10 @@ security:
 paths:
   /badges:
     post:
-      description: create multiple badges for the website
+      description: create badge for the website
       operationId: createBadge
+      parameters:
+        - $ref: '#/components/parameters/ApiKey'
       requestBody:
         content:
           'application/json':
@@ -19,11 +21,17 @@ paths:
       responses:
         '201':
           description: created
+        '400':
+          description: parameters are empty or null
+        '409':
+          description: badge already exists
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     get:
       description: get the list of all badges
       operationId: getBadges
+      parameters:
+        - $ref: '#/components/parameters/ApiKey'
       responses:
         '200':
           description: success
@@ -40,6 +48,7 @@ paths:
       description: get one badge, by name
       operationId: getBadge
       parameters:
+        - $ref: '#/components/parameters/ApiKey'
         - in: path
           name: name
           schema:

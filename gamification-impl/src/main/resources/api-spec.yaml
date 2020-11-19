@@ -23,6 +23,8 @@ paths:
           description: created
         '400':
           description: parameters are empty or null
+        '409':
+          description: badge already exists
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     get:

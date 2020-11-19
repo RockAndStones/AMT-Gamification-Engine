@@ -3,6 +3,11 @@ Feature: Basic operations for applications
   Background:
     Given there is an Application server
 
+  Scenario: create an application
+    Given I have an application payload
+    When I POST the application payload to the /application endpoint
+    Then I receive a 200 status code
+
   Scenario: create a event
     Given I have a event payload
     When I POST the event payload to the /events endpoint

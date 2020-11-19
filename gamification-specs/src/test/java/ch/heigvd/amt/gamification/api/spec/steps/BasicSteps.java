@@ -1,6 +1,8 @@
 package ch.heigvd.amt.gamification.api.spec.steps;
 
+import ch.heigvd.amt.gamification.api.dto.Application;
 import ch.heigvd.amt.gamification.api.dto.Badge;
+import ch.heigvd.amt.gamification.api.dto.InlineObject;
 import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.ApiException;
 import ch.heigvd.amt.gamification.ApiResponse;
@@ -22,11 +24,15 @@ public class BasicSteps {
 
     private Environment environment;
     private DefaultApi api;
+    private static String APIKEY = "";
 
     Event event;
     Badge badge;
+    Application app;
+    InlineObject obj;
 
     private ApiResponse lastApiResponse;
+    private ApiResponse lastApiResponseApp;
     private ApiException lastApiException;
     private boolean lastApiCallThrewException;
     private int lastStatusCode;
@@ -45,6 +51,23 @@ public class BasicSteps {
         assertNotNull(api);
     }
 
+    @Given("I have an application payload")
+    public void iHaveAnApplicationPayload() {
+        obj = new InlineObject().name("MyTestApp2");
+    }
+
+    @When("I POST the application payload to the /application endpoint$")
+    public void iPOSTTheApplicationPayloadToTheApplicationEndpoint() {
+        try {
+            lastApiResponseApp = api.newApplicationWithHttpInfo(obj);
+            processApiResponse(lastApiResponseApp);
+            app = (Application) lastApiResponseApp.getData();
+            APIKEY = app.getApiKey();
+        } catch (ApiException e) {
+            processApiException(e);
+        }
+    }
+
     @Given("I have a event payload")
     public void i_have_a_event_payload() throws Throwable {
         event = new ch.heigvd.amt.gamification.api.dto.Event()
@@ -55,15 +78,15 @@ public class BasicSteps {
     }
 
     //todo: fix test
-//    @When("^I POST the event payload to the /events endpoint$")
-//    public void i_POST_the_event_payload_to_the_events_endpoint() throws Throwable {
-//        try {
-//            lastApiResponse = api.createEventWithHttpInfo(event);
-//            processApiResponse(lastApiResponse);
-//        } catch (ApiException e) {
-//            processApiException(e);
-//        }
-//    }
+    @When("^I POST the event payload to the /events endpoint$")
+    public void i_POST_the_event_payload_to_the_events_endpoint() throws Throwable {
+        try {
+            lastApiResponse = api.createEventWithHttpInfo(APIKEY, event);
+            processApiResponse(lastApiResponse);
+        } catch (ApiException e) {
+            processApiException(e);
+        }
+    }
 
     @Then("I receive a {int} status code")
     public void i_receive_a_status_code(int expectedStatusCode) throws Throwable {
@@ -71,15 +94,15 @@ public class BasicSteps {
     }
 
     //todo: fix test
-//    @When("^I send a GET to the /events endpoint$")
-//    public void iSendAGETToTheEventsEndpoint() {
-//        try {
-//            lastApiResponse = api.getEventsWithHttpInfo();
-//            processApiResponse(lastApiResponse);
-//        } catch (ApiException e) {
-//            processApiException(e);
-//        }
-//    }
+    @When("^I send a GET to the /events endpoint$")
+    public void iSendAGETToTheEventsEndpoint() {
+        try {
+            lastApiResponse = api.getEventsWithHttpInfo(APIKEY);
+            processApiResponse(lastApiResponse);
+        } catch (ApiException e) {
+            processApiException(e);
+        }
+    }
 
     @Then("I receive a {int} status code with a location header")
     public void iReceiveAStatusCodeWithALocationHeader(int arg0) {
@@ -112,7 +135,7 @@ public class BasicSteps {
     @When("I POST the badge payload to the /badges endpoint$")
     public void iPOSTTheBadgePayloadToTheBadgesEndpoint() {
         try {
-            lastApiResponse = api.createBadgeWithHttpInfo(badge);
+            lastApiResponse = api.createBadgeWithHttpInfo(APIKEY, badge);
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
@@ -122,7 +145,7 @@ public class BasicSteps {
     @When("I send a GET to the /badges endpoint$")
     public void iSendAGETToTheBadgesEndpoint() {
         try {
-            lastApiResponse = api.getBadgesWithHttpInfo();
+            lastApiResponse = api.getBadgesWithHttpInfo(APIKEY);
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
@@ -132,7 +155,7 @@ public class BasicSteps {
     @When("I send a GET to the /badge/\\{name} endpoint$")
     public void iSendAGETToTheBadgeNameEndpoint() {
         try {
-            lastApiResponse = api.getBadgeWithHttpInfo(badge.getName());
+            lastApiResponse = api.getBadgeWithHttpInfo(APIKEY, badge.getName());
             processApiResponse(lastApiResponse);
             lastReceivedBadge = (Badge) lastApiResponse.getData();
         } catch (ApiException e) {

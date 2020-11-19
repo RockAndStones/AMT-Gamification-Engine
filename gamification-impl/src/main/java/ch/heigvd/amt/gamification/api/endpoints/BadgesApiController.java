@@ -44,6 +44,10 @@ public class BadgesApiController implements BadgesApi {
             badge.getName().isEmpty() || badge.getDescription().isEmpty())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
+        if(badgeRepository.findByNameAndAppApiKey(badge.getName(), xApiKey) != null){
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
         BadgeEntity newBadgeEntity = toBadgeEntity(badge);
         newBadgeEntity.setApp(app);
         badgeRepository.save(newBadgeEntity);
