@@ -87,6 +87,28 @@ public class BadgesApiController implements BadgesApi {
     }
 
     @Override
+    public ResponseEntity<Badge> putBadge(@ApiParam(value = "Application api key",required = true) @RequestHeader(value = "X-API-KEY",required = true) String X_API_KEY, @ApiParam(value = "",required = true) @PathVariable("name") String name, @ApiParam("") @Valid @RequestBody(required = false) Badge badge){
+        ApplicationEntity app = applicationRepository.findByApiKey(X_API_KEY);
+        if (app == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(badge.getName(), X_API_KEY);
+        if(existingBadgeEntity != null){
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+
+        existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, X_API_KEY);
+        if(existingBadgeEntity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        existingBadgeEntity.setName(badge.getName());
+        existingBadgeEntity.setDescription(badge.getDescription());
+        badgeRepository.save(existingBadgeEntity);
+
+        return ResponseEntity.ok(toBadge(existingBadgeEntity));
+    }
+
+    @Override
     public ResponseEntity<Void> removeBadge(@ApiParam(value = "Application api key",required = true) @RequestHeader(value = "X-API-KEY",required = true) String X_API_KEY, @ApiParam(value = "",required = true) @PathVariable("name") String name) {
         ApplicationEntity app = applicationRepository.findByApiKey(X_API_KEY);
         if (app == null)

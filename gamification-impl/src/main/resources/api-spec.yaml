@@ -63,6 +63,30 @@ paths:
                 $ref: '#/components/schemas/Badge'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+    put:
+      description: update a badge, by name
+      operationId: putBadge
+      parameters:
+        - $ref: '#/components/parameters/ApiKey'
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Badge'
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Badge'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       description: delete the specified badge
       operationId: removeBadge
