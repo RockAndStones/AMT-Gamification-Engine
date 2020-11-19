@@ -86,6 +86,20 @@ public class BadgesApiController implements BadgesApi {
         return ResponseEntity.ok(badges);
     }
 
+    @Override
+    public ResponseEntity<Void> removeBadge(@ApiParam(value = "Application api key",required = true) @RequestHeader(value = "X-API-KEY",required = true) String X_API_KEY, @ApiParam(value = "",required = true) @PathVariable("name") String name) {
+        ApplicationEntity app = applicationRepository.findByApiKey(X_API_KEY);
+        if (app == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, X_API_KEY);
+        if(existingBadgeEntity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        badgeRepository.delete(existingBadgeEntity);
+        return ResponseEntity.ok().build();
+    }
+
     private BadgeEntity toBadgeEntity(Badge badge) {
         BadgeEntity entity = new BadgeEntity();
         entity.setName(badge.getName());

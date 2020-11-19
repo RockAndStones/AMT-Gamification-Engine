@@ -20,11 +20,11 @@ paths:
                 $ref: '#/components/schemas/Badge'
       responses:
         '201':
-          description: created
+          description: Created
         '400':
-          description: parameters are empty or null
+          description: Pparameters are empty or null
         '409':
-          description: badge already exists
+          description: Badge already exists
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     get:
@@ -61,6 +61,21 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Badge'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      description: delete the specified badge
+      operationId: removeBadge
+      parameters:
+        - $ref: '#/components/parameters/ApiKey'
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Badge Removed
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /events:

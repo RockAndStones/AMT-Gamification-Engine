@@ -41,3 +41,8 @@ Feature: Basic operations for applications
     When I send a GET to the /badge/{name} endpoint
     Then I receive a 200 status code
     And I receive a payload that is the same as the created badge payload
+
+  Scenario: delete a desired badge
+    Given I have a badge payload
+    When I send a DELETE to the /badge/{name} endpoint
+    Then I receive a 200 status code

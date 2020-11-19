@@ -170,6 +170,22 @@ public class BasicSteps {
         }
     }
 
+    @And("I receive a payload that is the same as the created badge payload")
+    public void iReceiveAPayloadThatIsTheSameAsTheCreatedBadgePayload() {
+        assertEquals(badge, lastReceivedBadge);
+    }
+
+    @When("I send a DELETE to the /badge/\\{name} endpoint$")
+    public void iSendADELETEToTheBadgeNameEndpoint() {
+        try {
+            lastApiResponse = api.removeBadgeWithHttpInfo(APIKEY, badge.getName());
+            processApiResponse(lastApiResponse);
+            lastReceivedBadge = (Badge) lastApiResponse.getData();
+        } catch (ApiException e) {
+            processApiException(e);
+        }
+    }
+
     private void processApiResponse(ApiResponse apiResponse) {
         lastApiResponse = apiResponse;
         lastApiCallThrewException = false;
@@ -184,10 +200,5 @@ public class BasicSteps {
         lastApiResponse = null;
         lastApiException = apiException;
         lastStatusCode = lastApiException.getCode();
-    }
-
-    @And("I receive a payload that is the same as the created badge payload")
-    public void iReceiveAPayloadThatIsTheSameAsTheCreatedBadgePayload() {
-        assertEquals(badge, lastReceivedBadge);
     }
 }
