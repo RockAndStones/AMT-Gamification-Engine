@@ -132,6 +132,13 @@ public class BasicSteps {
                 .description("This is my test badge");
     }
 
+    @Given("I have an empty badge payload")
+    public void iHaveAnEmptyBadgePayload() {
+        badge = new ch.heigvd.amt.gamification.api.dto.Badge()
+                .name("")
+                .description("");
+    }
+
     @When("I POST the badge payload to the /badges endpoint$")
     public void iPOSTTheBadgePayloadToTheBadgesEndpoint() {
         try {
