@@ -62,7 +62,7 @@ public class EventsApiController implements EventsApi {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         List<Event> events = new LinkedList<>();
-        for (EventEntity eventEntity : eventRepository.findAllByAppApiKey(xApiKey)) {
+        for (EventEntity eventEntity : app.getEvents()) {
             events.add(toEvent(eventEntity));
         }
 
