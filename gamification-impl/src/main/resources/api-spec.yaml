@@ -153,7 +153,7 @@ paths:
                 $ref: '#/components/schemas/Event'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /application:
+  /applications:
     post:
       description: create a new application
       operationId: newApplication

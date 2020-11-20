@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.ServletRequest;
 import javax.validation.Valid;
-import java.util.LinkedList;
 
 @Controller
 public class ApplicationApiController implements ApplicationApi {
