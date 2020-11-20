@@ -79,6 +79,9 @@ public class BadgesApiController implements BadgesApi {
     }
 
     public ResponseEntity<List<Badge>> getBadges(@RequestHeader(value = "X-API-KEY") String xApiKey) {
+        ApplicationEntity app = applicationRepository.findByApiKey(xApiKey);
+        if (app == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         List<Badge> badges = new ArrayList<>();
         for (BadgeEntity badgeEntity : badgeRepository.findAllByAppApiKey(xApiKey)) {
             badges.add(toBadge(badgeEntity));

@@ -172,6 +172,24 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Application'
+  /rules:
+    post:
+      description: create a new rule
+      operationId: newRule
+      parameters:
+        - $ref: '#/components/parameters/ApiKey'
+      requestBody:
+         content:
+           'application/json':
+             schema:
+               $ref: '#/components/schemas/Rule'
+      responses:
+        '201':
+          description: New rule created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Rule'
 
 components:
   securitySchemes:
@@ -225,3 +243,25 @@ components:
           type: string
         name:
           type: string
+    Rule:
+      type: object
+      required:
+        - name
+        - description
+        - eventType
+        - pointsToAdd
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        eventType:
+          type: string
+        pointsToAdd:
+          type: number
+          format: double
+        badgeName:
+          type: string
+        pointToReach:
+          type: number
+          format: double
