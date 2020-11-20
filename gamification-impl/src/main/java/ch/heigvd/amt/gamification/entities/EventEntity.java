@@ -23,4 +23,7 @@ public class EventEntity implements Serializable {
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private OffsetDateTime timestamp;
+
+    @ManyToOne
+    private ApplicationEntity app;
 }
