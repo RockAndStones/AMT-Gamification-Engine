@@ -1,13 +1,10 @@
 package ch.heigvd.amt.gamification.api.endpoints;
 
 import ch.heigvd.amt.gamification.api.RulesApi;
-import ch.heigvd.amt.gamification.api.model.Event;
 import ch.heigvd.amt.gamification.api.model.Rule;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
-import ch.heigvd.amt.gamification.entities.EventEntity;
 import ch.heigvd.amt.gamification.entities.RuleEntity;
 import ch.heigvd.amt.gamification.repositories.ApplicationRepository;
-import ch.heigvd.amt.gamification.repositories.BadgeRepository;
 import ch.heigvd.amt.gamification.repositories.RuleRepository;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
