@@ -5,11 +5,13 @@ import ch.heigvd.amt.gamification.api.model.Rule;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.RuleEntity;
 import ch.heigvd.amt.gamification.repositories.ApplicationRepository;
+import ch.heigvd.amt.gamification.repositories.BadgeRepository;
 import ch.heigvd.amt.gamification.repositories.RuleRepository;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,24 +20,38 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 
+@Controller
 public class RuleApiController implements RulesApi {
 
     @Autowired
     RuleRepository ruleRepository;
 
     @Autowired
+    BadgeRepository badgeRepository;
+
+    @Autowired
     ApplicationRepository applicationRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Rule> newRule(@ApiParam(value = "Application api key",required = true) @RequestHeader(value = "X-API-KEY",required = true) String X_API_KEY, @ApiParam("") @Valid @RequestBody(required = false) Rule rule) {
+    public ResponseEntity<Rule> createRule(@ApiParam(value = "Application api key",required = true) @RequestHeader(value = "X-API-KEY",required = true) String X_API_KEY, @ApiParam("") @Valid @RequestBody(required = false) Rule rule) {
         ApplicationEntity app = applicationRepository.findByApiKey(X_API_KEY);
         if (app == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
+        if(isNullOrEmpty(rule.getName()) || isNullOrEmpty(rule.getDescription()) ||
+                isNullOrEmpty(rule.getEventType()) || rule.getPointsToAdd() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if(rule.getBadgeName() != null) {
+            if (badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), X_API_KEY) == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        }
+
         RuleEntity newRuleEntity = toRuleEntity(rule);
         newRuleEntity.setApp(app);
         ruleRepository.save(newRuleEntity);
-        Long id = newRuleEntity.getId();
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
@@ -72,5 +88,9 @@ public class RuleApiController implements RulesApi {
         rule.setBadgeName(entity.getBadgeName());
         rule.setPointsToAdd(entity.getPointsToAdd());
         return rule;
+    }
+
+    private static boolean isNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
     }
 }
