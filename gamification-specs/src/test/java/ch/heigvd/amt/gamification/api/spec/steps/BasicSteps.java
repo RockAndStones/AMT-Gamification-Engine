@@ -1,19 +1,15 @@
 package ch.heigvd.amt.gamification.api.spec.steps;
 
-import ch.heigvd.amt.gamification.api.dto.Application;
-import ch.heigvd.amt.gamification.api.dto.Badge;
-import ch.heigvd.amt.gamification.api.dto.InlineObject;
+import ch.heigvd.amt.gamification.api.dto.*;
 import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.ApiException;
 import ch.heigvd.amt.gamification.ApiResponse;
 import ch.heigvd.amt.gamification.api.DefaultApi;
-import ch.heigvd.amt.gamification.api.dto.Event;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -24,10 +20,11 @@ public class BasicSteps {
 
     private Environment environment;
     private DefaultApi api;
-    private static String APIKEY = "";
+    static String APIKEY = "";
 
     Event event;
     Badge badge;
+    Rule rule;
     Application app;
     InlineObject obj;
 
@@ -181,6 +178,43 @@ public class BasicSteps {
             lastApiResponse = api.removeBadgeWithHttpInfo(APIKEY, badge.getName());
             processApiResponse(lastApiResponse);
             lastReceivedBadge = (Badge) lastApiResponse.getData();
+        } catch (ApiException e) {
+            processApiException(e);
+        }
+    }
+
+    @Given("I have a rule payload")
+    public void iHaveARulePayload() {
+        rule = new ch.heigvd.amt.gamification.api.dto.Rule()
+                .name("MyTestRule")
+                .description("This is the rule for a test")
+                .eventType("TestEvent")
+                .pointsToAdd(10.0);
+    }
+
+    @Given("I have a rule payload with unknown badge")
+    public void iHaveARulePayloadWithUnknownBadge() {
+        rule = new ch.heigvd.amt.gamification.api.dto.Rule()
+                .name("MyTestRule")
+                .description("This is the rule for a test")
+                .eventType("TestEvent")
+                .pointsToAdd(10.0)
+                .badgeName("UnknownBadge");
+    }
+
+    @Given("I have a rule payload with missing information")
+    public void iHaveARulePayloadWithMissingInformation() {
+        rule = new ch.heigvd.amt.gamification.api.dto.Rule()
+                .name("MyTestRule")
+                .description("This is the rule for a test")
+                .pointsToAdd(10.0);
+    }
+
+    @When("I POST the rule payload to the /rules endpoint$")
+    public void iPOSTTheRulePayloadToTheRulesEndpoint() {
+        try {
+            lastApiResponse = api.createRuleWithHttpInfo(APIKEY, rule);
+            processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
         }
