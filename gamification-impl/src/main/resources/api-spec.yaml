@@ -172,6 +172,44 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Application'
+  /users:
+    get:
+      description: get the list of all users
+      operationId: getUsers
+      parameters:
+        - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /users/{id}:
+    get:
+      description: get one user, by id
+      operationId: getUser
+      parameters:
+        - $ref: '#/components/parameters/ApiKey'
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+
 
 components:
   securitySchemes:
@@ -225,3 +263,10 @@ components:
           type: string
         name:
           type: string
+    User:
+      type: object
+      properties:
+        badges:
+            type: array
+            items:
+              $ref: '#/components/schemas/Badge'
