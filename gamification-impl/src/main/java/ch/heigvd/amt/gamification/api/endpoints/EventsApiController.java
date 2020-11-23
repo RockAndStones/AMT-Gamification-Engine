@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -34,16 +35,13 @@ public class EventsApiController implements EventsApi {
     @Autowired
     ApplicationRepository applicationRepository;
 
+    @Autowired
+    ServletRequest request;
+
     @Override
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createEvent(
-            @RequestHeader(value = "X-API-KEY") String xApiKey,
-            @ApiParam(value = "", required = true) @Valid @RequestBody Event event
-    ) {
-        ApplicationEntity app = applicationRepository.findByApiKey(xApiKey);
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
+    public ResponseEntity<Void> createEvent(@ApiParam(value = ""  )  @Valid @RequestBody(required = false) Event event) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
         EventEntity newEventEntity = toEventEntity(event);
         newEventEntity.setApp(app);
         eventRepository.save(newEventEntity);
@@ -56,14 +54,15 @@ public class EventsApiController implements EventsApi {
         return ResponseEntity.created(location).build();
     }
 
-    public ResponseEntity<List<Event>> getEvents(@RequestHeader(value = "X-API-KEY") String xApiKey) {
-        ApplicationEntity app = applicationRepository.findByApiKey(xApiKey);
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<List<Event>> getEvents() {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         List<Event> events = new LinkedList<>();
-        for (EventEntity eventEntity : app.getEvents()) {
-            events.add(toEvent(eventEntity));
+        for (EventEntity eventEntity : eventRepository.findAll()) {
+            //TODO compare Apps and not apiKey
+            if(eventEntity.getApp().getApiKey().equals(app.getApiKey())) {
+                events.add(toEvent(eventEntity));
+            }
         }
 
         return ResponseEntity.ok(events);
@@ -71,6 +70,10 @@ public class EventsApiController implements EventsApi {
 
     @Override
     public ResponseEntity<Event> getEvent(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+        if (app == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
         EventEntity existingEventEntity = eventRepository.findById(Long.valueOf(id)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return ResponseEntity.ok(toEvent(existingEventEntity));
     }

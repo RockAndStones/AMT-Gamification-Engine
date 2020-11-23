@@ -23,9 +23,6 @@ public class ApplicationEntity implements Serializable {
     private String name;
 
     @OneToMany
-    private List<EventEntity> events;
-
-    @OneToMany
     private List<BadgeEntity> badges;
 
     static public String generateApiKey() {

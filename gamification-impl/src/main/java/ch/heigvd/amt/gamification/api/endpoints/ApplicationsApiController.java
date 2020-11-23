@@ -1,6 +1,6 @@
 package ch.heigvd.amt.gamification.api.endpoints;
 
-import ch.heigvd.amt.gamification.api.ApplicationApi;
+import ch.heigvd.amt.gamification.api.ApplicationsApi;
 import ch.heigvd.amt.gamification.api.model.Application;
 import ch.heigvd.amt.gamification.api.model.InlineObject;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 
 @Controller
-public class ApplicationApiController implements ApplicationApi {
+public class ApplicationsApiController implements ApplicationsApi {
     @Autowired
     ApplicationRepository applicationRepository;
 

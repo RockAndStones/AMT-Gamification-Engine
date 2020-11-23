@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
@@ -34,28 +35,24 @@ public class BadgesApiController implements BadgesApi {
     @Autowired
     ApplicationRepository applicationRepository;
 
+    @Autowired
+    ServletRequest request;
+
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createBadge(@RequestHeader(value = "X-API-KEY") String xApiKey, @ApiParam(value = ""  ) @Valid @RequestBody(required = false) Badge badge) {
-        ApplicationEntity app = applicationRepository.findByApiKey(xApiKey);
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<Void> createBadge(@ApiParam("") @Valid @RequestBody(required = false) Badge badge) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         if (badge.getName() == null   || badge.getDescription() == null ||
             badge.getName().isEmpty() || badge.getDescription().isEmpty())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
-        if(badgeRepository.findByNameAndAppApiKey(badge.getName(), xApiKey) != null){
+        if(badgeRepository.findByNameAndAppApiKey(badge.getName(), app.getApiKey()) != null){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
         BadgeEntity newBadgeEntity = toBadgeEntity(badge);
         newBadgeEntity.setApp(app);
         badgeRepository.save(newBadgeEntity);
-
-//
-//        URI locationId = ServletUriComponentsBuilder
-//                .fromCurrentRequest().path("/{id}")
-//                .buildAndExpand(newBadgeEntity.getId()).toUri();
 
         URI locationName = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{name}")
@@ -66,41 +63,35 @@ public class BadgesApiController implements BadgesApi {
     }
 
     @Override
-    public ResponseEntity<Badge> getBadge(@RequestHeader(value = "X-API-KEY") String xApiKey, @ApiParam(value = "",required=true) @PathVariable("name") String name) {
-        ApplicationEntity app = applicationRepository.findByApiKey(xApiKey);
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<Badge> getBadge(@ApiParam(value = "",required=true) @PathVariable("name") String name) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, xApiKey);
+        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, app.getApiKey());
         if(existingBadgeEntity == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(toBadge(existingBadgeEntity));
     }
 
-    public ResponseEntity<List<Badge>> getBadges(@RequestHeader(value = "X-API-KEY") String xApiKey) {
-        ApplicationEntity app = applicationRepository.findByApiKey(xApiKey);
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<List<Badge>> getBadges() {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
         List<Badge> badges = new ArrayList<>();
-        for (BadgeEntity badgeEntity : badgeRepository.findAllByAppApiKey(xApiKey)) {
+        for (BadgeEntity badgeEntity : badgeRepository.findAllByAppApiKey(app.getApiKey())) {
             badges.add(toBadge(badgeEntity));
         }
         return ResponseEntity.ok(badges);
     }
 
     @Override
-    public ResponseEntity<Badge> putBadge(@ApiParam(value = "Application api key",required = true) @RequestHeader(value = "X-API-KEY",required = true) String X_API_KEY, @ApiParam(value = "",required = true) @PathVariable("name") String name, @ApiParam("") @Valid @RequestBody(required = false) Badge badge){
-        ApplicationEntity app = applicationRepository.findByApiKey(X_API_KEY);
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<Badge> putBadge(@ApiParam(value = "",required=true) @PathVariable("name") String name,@ApiParam(value = ""  )  @Valid @RequestBody(required = false) Badge badge){
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(badge.getName(), X_API_KEY);
+        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(badge.getName(), app.getApiKey());
         if(existingBadgeEntity != null){
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
-        existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, X_API_KEY);
+        existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, app.getApiKey());
         if(existingBadgeEntity == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -112,12 +103,10 @@ public class BadgesApiController implements BadgesApi {
     }
 
     @Override
-    public ResponseEntity<Void> removeBadge(@ApiParam(value = "Application api key",required = true) @RequestHeader(value = "X-API-KEY",required = true) String X_API_KEY, @ApiParam(value = "",required = true) @PathVariable("name") String name) {
-        ApplicationEntity app = applicationRepository.findByApiKey(X_API_KEY);
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<Void> removeBadge(@ApiParam(value = "",required=true) @PathVariable("name") String name) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, X_API_KEY);
+        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, app.getApiKey());
         if(existingBadgeEntity == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
