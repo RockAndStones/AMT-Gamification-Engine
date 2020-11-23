@@ -17,7 +17,7 @@ public class EventEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String userId;
+    private String userAppId;
     private String eventType;
 //    private Object eventProperties;
 

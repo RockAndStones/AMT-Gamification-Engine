@@ -46,12 +46,13 @@ public class AuthorizationFilter implements Filter {
     public void destroy() { }
 
     @Bean
-    public FilterRegistrationBean<AuthorizationFilter> filterRegistrationBean(){
+    public FilterRegistrationBean<AuthorizationFilter> filterRegistrationBean() {
         FilterRegistrationBean<AuthorizationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(this);
         registrationBean.addUrlPatterns("/badges/*");
         registrationBean.addUrlPatterns("/events/*");
         registrationBean.addUrlPatterns("/rules/*");
+        registrationBean.addUrlPatterns("/users/*");
         return registrationBean;
     }
 }

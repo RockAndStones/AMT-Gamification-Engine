@@ -11,8 +11,12 @@ import java.util.List;
 public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long   id;
+    private String userAppId;
 
     @OneToMany
     private List<BadgeEntity> badges;
+
+    @ManyToOne
+    private ApplicationEntity app;
 }

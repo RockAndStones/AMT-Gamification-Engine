@@ -189,8 +189,6 @@ paths:
     get:
       description: get the list of all users
       operationId: getUsers
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       responses:
         '200':
           description: success
@@ -202,14 +200,13 @@ paths:
                   $ref: '#/components/schemas/User'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /users/{id}:
+  /users/{userAppId}:
     get:
-      description: get one user, by id
+      description: get one user, by userAppId
       operationId: getUser
       parameters:
-        - $ref: '#/components/parameters/ApiKey'
         - in: path
-          name: id
+          name: userAppId
           schema:
             type: string
           required: true
@@ -253,7 +250,7 @@ components:
     Event:
       type: object
       properties:
-        userId:
+        userAppId:
           type: string
         timestamp:
           type: string
@@ -301,6 +298,8 @@ components:
     User:
       type: object
       properties:
+        userAppId:
+          type: string
         badges:
             type: array
             items:
