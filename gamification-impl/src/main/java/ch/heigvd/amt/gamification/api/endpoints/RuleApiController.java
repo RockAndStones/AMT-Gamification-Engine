@@ -13,10 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -32,11 +32,12 @@ public class RuleApiController implements RulesApi {
     @Autowired
     ApplicationRepository applicationRepository;
 
+    @Autowired
+    ServletRequest request;
+
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Rule> createRule(@ApiParam(value = "Application api key",required = true) @RequestHeader(value = "X-API-KEY",required = true) String X_API_KEY, @ApiParam("") @Valid @RequestBody(required = false) Rule rule) {
-        ApplicationEntity app = applicationRepository.findByApiKey(X_API_KEY);
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<Rule> createRule(@ApiParam(value = "" ,required=true )  @Valid @RequestBody Rule rule) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         if(isNullOrEmpty(rule.getName()) || isNullOrEmpty(rule.getDescription()) ||
                 isNullOrEmpty(rule.getEventType()) || rule.getPointsToAdd() == null){
@@ -44,7 +45,7 @@ public class RuleApiController implements RulesApi {
         }
 
         if(rule.getBadgeName() != null) {
-            if (badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), X_API_KEY) == null){
+            if (badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey()) == null){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         }
