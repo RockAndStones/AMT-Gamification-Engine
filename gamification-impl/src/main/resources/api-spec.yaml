@@ -11,8 +11,6 @@ paths:
     post:
       description: create badge for the website
       operationId: createBadge
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       requestBody:
         content:
           'application/json':
@@ -22,7 +20,7 @@ paths:
         '201':
           description: Created
         '400':
-          description: Pparameters are empty or null
+          description: Parameters are empty or null
         '409':
           description: Badge already exists
         '401':
@@ -30,8 +28,6 @@ paths:
     get:
       description: get the list of all badges
       operationId: getBadges
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       responses:
         '200':
           description: success
@@ -48,7 +44,6 @@ paths:
       description: get one badge, by name
       operationId: getBadge
       parameters:
-        - $ref: '#/components/parameters/ApiKey'
         - in: path
           name: name
           schema:
@@ -67,7 +62,6 @@ paths:
       description: update a badge, by name
       operationId: putBadge
       parameters:
-        - $ref: '#/components/parameters/ApiKey'
         - in: path
           name: name
           schema:
@@ -91,7 +85,6 @@ paths:
       description: delete the specified badge
       operationId: removeBadge
       parameters:
-        - $ref: '#/components/parameters/ApiKey'
         - in: path
           name: name
           schema:
@@ -106,8 +99,6 @@ paths:
     post:
       description: create a user event
       operationId: createEvent
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       requestBody:
         content:
           'application/json':
@@ -121,8 +112,6 @@ paths:
     get:
       description: get the list of all events
       operationId: getEvents
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       responses:
         '200':
           description: success
@@ -158,6 +147,7 @@ paths:
       description: create a new application
       operationId: newApplication
       requestBody:
+        required: true
         content:
           'application/json':
             schema:
@@ -172,6 +162,29 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Application'
+  /rules:
+    post:
+      description: create a new rule
+      operationId: createRule
+      requestBody:
+         required: true
+         content:
+           'application/json':
+             schema:
+               $ref: '#/components/schemas/Rule'
+      responses:
+        '201':
+          description: New rule created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Missing important fields
+        '404':
+          description: If badge name sent is not known
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
   /users:
     get:
       description: get the list of all users
@@ -263,6 +276,28 @@ components:
           type: string
         name:
           type: string
+    Rule:
+      type: object
+      required:
+        - name
+        - description
+        - eventType
+        - pointsToAdd
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        eventType:
+          type: string
+        pointsToAdd:
+          type: number
+          format: double
+        badgeName:
+          type: string
+        pointToReach:
+          type: number
+          format: double
     User:
       type: object
       properties:
