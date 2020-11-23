@@ -11,8 +11,6 @@ paths:
     post:
       description: create badge for the website
       operationId: createBadge
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       requestBody:
         content:
           'application/json':
@@ -30,8 +28,6 @@ paths:
     get:
       description: get the list of all badges
       operationId: getBadges
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       responses:
         '200':
           description: success
@@ -48,7 +44,6 @@ paths:
       description: get one badge, by name
       operationId: getBadge
       parameters:
-        - $ref: '#/components/parameters/ApiKey'
         - in: path
           name: name
           schema:
@@ -67,7 +62,6 @@ paths:
       description: update a badge, by name
       operationId: putBadge
       parameters:
-        - $ref: '#/components/parameters/ApiKey'
         - in: path
           name: name
           schema:
@@ -91,7 +85,6 @@ paths:
       description: delete the specified badge
       operationId: removeBadge
       parameters:
-        - $ref: '#/components/parameters/ApiKey'
         - in: path
           name: name
           schema:
@@ -106,8 +99,6 @@ paths:
     post:
       description: create a user event
       operationId: createEvent
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       requestBody:
         content:
           'application/json':
@@ -121,8 +112,6 @@ paths:
     get:
       description: get the list of all events
       operationId: getEvents
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       responses:
         '200':
           description: success
@@ -153,7 +142,7 @@ paths:
                 $ref: '#/components/schemas/Event'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /application:
+  /applications:
     post:
       description: create a new application
       operationId: newApplication
@@ -177,8 +166,6 @@ paths:
     post:
       description: create a new rule
       operationId: createRule
-      parameters:
-        - $ref: '#/components/parameters/ApiKey'
       requestBody:
         required: true
         content:
