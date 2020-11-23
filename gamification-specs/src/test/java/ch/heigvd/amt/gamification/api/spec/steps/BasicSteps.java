@@ -9,6 +9,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.apiguardian.api.API;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -41,6 +42,7 @@ public class BasicSteps {
     public BasicSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
+        api.getApiClient().setApiKey(APIKEY);
     }
 
     @Given("there is an Application server")
@@ -78,7 +80,7 @@ public class BasicSteps {
     @When("^I POST the event payload to the /events endpoint$")
     public void i_POST_the_event_payload_to_the_events_endpoint() throws Throwable {
         try {
-            lastApiResponse = api.createEventWithHttpInfo(APIKEY, event);
+            lastApiResponse = api.createEventWithHttpInfo(event);
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
@@ -94,7 +96,7 @@ public class BasicSteps {
     @When("^I send a GET to the /events endpoint$")
     public void iSendAGETToTheEventsEndpoint() {
         try {
-            lastApiResponse = api.getEventsWithHttpInfo(APIKEY);
+            lastApiResponse = api.getEventsWithHttpInfo();
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
@@ -139,7 +141,7 @@ public class BasicSteps {
     @When("I POST the badge payload to the /badges endpoint$")
     public void iPOSTTheBadgePayloadToTheBadgesEndpoint() {
         try {
-            lastApiResponse = api.createBadgeWithHttpInfo(APIKEY, badge);
+            lastApiResponse = api.createBadgeWithHttpInfo(badge);
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
@@ -149,7 +151,7 @@ public class BasicSteps {
     @When("I send a GET to the /badges endpoint$")
     public void iSendAGETToTheBadgesEndpoint() {
         try {
-            lastApiResponse = api.getBadgesWithHttpInfo(APIKEY);
+            lastApiResponse = api.getBadgesWithHttpInfo();
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
@@ -159,7 +161,7 @@ public class BasicSteps {
     @When("I send a GET to the /badge/\\{name} endpoint$")
     public void iSendAGETToTheBadgeNameEndpoint() {
         try {
-            lastApiResponse = api.getBadgeWithHttpInfo(APIKEY, badge.getName());
+            lastApiResponse = api.getBadgeWithHttpInfo(badge.getName());
             processApiResponse(lastApiResponse);
             lastReceivedBadge = (Badge) lastApiResponse.getData();
         } catch (ApiException e) {
@@ -175,7 +177,7 @@ public class BasicSteps {
     @When("I send a DELETE to the /badge/\\{name} endpoint$")
     public void iSendADELETEToTheBadgeNameEndpoint() {
         try {
-            lastApiResponse = api.removeBadgeWithHttpInfo(APIKEY, badge.getName());
+            lastApiResponse = api.removeBadgeWithHttpInfo(badge.getName());
             processApiResponse(lastApiResponse);
             lastReceivedBadge = (Badge) lastApiResponse.getData();
         } catch (ApiException e) {
@@ -213,7 +215,7 @@ public class BasicSteps {
     @When("I POST the rule payload to the /rules endpoint$")
     public void iPOSTTheRulePayloadToTheRulesEndpoint() {
         try {
-            lastApiResponse = api.createRuleWithHttpInfo(APIKEY, rule);
+            lastApiResponse = api.createRuleWithHttpInfo(rule);
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
