@@ -1,6 +1,5 @@
 package ch.heigvd.amt.gamification.api.endpoints;
 
-import ch.heigvd.amt.gamification.api.model.User;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.EventEntity;
 import ch.heigvd.amt.gamification.entities.UserEntity;
@@ -75,25 +74,30 @@ public class EventsApiController implements EventsApi {
     }
 
     public ResponseEntity<List<Event>> getEvents() {
-        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        List<Event> events = new LinkedList<>();
-        for (EventEntity eventEntity : eventRepository.findAll()) {
-            //TODO compare Apps and not apiKey
-            if(eventEntity.getApp().getApiKey().equals(app.getApiKey())) {
-                events.add(toEvent(eventEntity));
-            }
-        }
-
-        return ResponseEntity.ok(events);
-    }
-
-    @Override
-    public ResponseEntity<Event> getEvent(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+        // Get application entity, required to continue event creation process
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
         if (app == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
+        // Get and return the list of events
+        List<Event> events = new LinkedList<>();
+        for (EventEntity eventEntity : eventRepository.findAllByApp(app)) {
+            events.add(toEvent(eventEntity));
+        }
+        return ResponseEntity.ok(events);
+
+    }
+
+    @Override
+    public ResponseEntity<Event> getEvent(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
+
+        // Get application entity, required to continue event creation process
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+        if (app == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        // Get and return the event
         EventEntity existingEventEntity = eventRepository.findById(Long.valueOf(id)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return ResponseEntity.ok(toEvent(existingEventEntity));
     }

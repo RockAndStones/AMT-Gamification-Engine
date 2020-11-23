@@ -6,7 +6,6 @@ import ch.heigvd.amt.gamification.api.model.User;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.BadgeEntity;
 import ch.heigvd.amt.gamification.entities.UserEntity;
-import ch.heigvd.amt.gamification.repositories.ApplicationRepository;
 import ch.heigvd.amt.gamification.repositories.UserRepository;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
