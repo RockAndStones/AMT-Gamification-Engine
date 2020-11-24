@@ -31,8 +31,6 @@ public class UsersApiController implements UsersApi {
     public ResponseEntity<User> getUser(@ApiParam(value = "", required=true) @PathVariable("userAppId") String userAppId) {
 
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         UserEntity existingUserEntity = userRepository.findByUserAppIdAndAppApiKey(userAppId, app.getApiKey());
         if (existingUserEntity == null)
@@ -44,8 +42,6 @@ public class UsersApiController implements UsersApi {
     public ResponseEntity<List<User>> getUsers() {
 
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         List<User> users = new ArrayList<>();
         for (UserEntity userEntity : userRepository.findAllByAppApiKey(app.getApiKey())) {

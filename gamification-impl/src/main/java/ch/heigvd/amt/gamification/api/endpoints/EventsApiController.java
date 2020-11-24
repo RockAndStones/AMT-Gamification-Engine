@@ -41,10 +41,8 @@ public class EventsApiController implements EventsApi {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createEvent(@ApiParam(value = "") @Valid @RequestBody(required = false) Event event) {
 
-        // Get application entity, required to continue event creation process
+        // Get application entity
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         // Create the user if not present in the repository
         UserEntity userEntity = userRepository.findByUserAppIdAndAppApiKey(event.getUserAppId(), app.getApiKey());
@@ -75,10 +73,8 @@ public class EventsApiController implements EventsApi {
 
     public ResponseEntity<List<Event>> getEvents() {
 
-        // Get application entity, required to continue event creation process
+        // Get application entity
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         // Get and return the list of events
         List<Event> events = new LinkedList<>();
@@ -92,10 +88,8 @@ public class EventsApiController implements EventsApi {
     @Override
     public ResponseEntity<Event> getEvent(@ApiParam(value = "",required=true) @PathVariable("id") Integer id) {
 
-        // Get application entity, required to continue event creation process
+        // Get application entity
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-        if (app == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         // Get and return the event
         EventEntity existingEventEntity = eventRepository.findById(Long.valueOf(id)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
