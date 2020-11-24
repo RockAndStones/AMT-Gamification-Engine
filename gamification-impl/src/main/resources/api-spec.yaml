@@ -185,6 +185,41 @@ paths:
           description: If badge name sent is not known
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+  /users:
+    get:
+      description: get the list of all users
+      operationId: getUsers
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /users/{userAppId}:
+    get:
+      description: get one user, by userAppId
+      operationId: getUser
+      parameters:
+        - in: path
+          name: userAppId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+
 
 components:
   securitySchemes:
@@ -215,7 +250,7 @@ components:
     Event:
       type: object
       properties:
-        userId:
+        userAppId:
           type: string
         timestamp:
           type: string
@@ -260,3 +295,12 @@ components:
         pointToReach:
           type: number
           format: double
+    User:
+      type: object
+      properties:
+        userAppId:
+          type: string
+        badges:
+            type: array
+            items:
+              $ref: '#/components/schemas/Badge'
