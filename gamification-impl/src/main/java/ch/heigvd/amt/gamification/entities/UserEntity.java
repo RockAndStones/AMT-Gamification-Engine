@@ -13,6 +13,7 @@ public class UserEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long   id;
     private String userAppId;
+    private double points;
 
     @OneToMany
     private List<BadgeEntity> badges;
