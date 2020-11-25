@@ -27,15 +27,19 @@ public class EventProcessor {
         UserEntity user = userRepository.findByUserAppIdAndAppApiKey(event.getUserAppId(), app.getApiKey());
         for(RuleEntity r : ruleRepository.findAllByAppApiKey(app.getApiKey())){
             if (r.getEventType().equals(event.getEventType())){
-                if(!r.getBadgeName().isEmpty()){
-                    double currentPoints = user.getPoints();
-                    currentPoints = currentPoints + r.getPointsToAdd();
-                    user.setPoints(currentPoints);
-                    user.getBadges().add(badgeRepository.findByNameAndAppApiKey(r.getBadgeName(), app.getApiKey()));
-                } else {
-                    double currentPoints = user.getPoints();
-                    currentPoints = currentPoints + r.getPointsToAdd();
-                    user.setPoints(currentPoints);
+                // TODO : Better solution for the pointsReached
+                boolean pointsReached = false;
+                if(r.getPointToReach() != 0.0 && user.getPoints() == r.getPointToReach()){
+                    pointsReached = true;
+                }
+                if(pointsReached || r.getPointToReach() == 0.0) {
+                    if (!r.getBadgeName().isEmpty()) {
+                        user.getBadges().add(badgeRepository.findByNameAndAppApiKey(r.getBadgeName(), app.getApiKey()));
+                    } else {
+                        double currentPoints = user.getPoints();
+                        currentPoints = currentPoints + r.getPointsToAdd();
+                        user.setPoints(currentPoints);
+                    }
                 }
                 userRepository.save(user);
             }
