@@ -37,6 +37,7 @@ public class EventProcessor {
                     currentPoints = currentPoints + r.getPointsToAdd();
                     user.setPoints(currentPoints);
                 }
+                userRepository.save(user);
             }
         }
     }

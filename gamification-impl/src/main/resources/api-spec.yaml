@@ -304,3 +304,5 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Badge'
+        points:
+          type: double
