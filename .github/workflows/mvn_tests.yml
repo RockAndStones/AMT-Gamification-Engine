@@ -32,8 +32,8 @@ jobs:
         with:
           url: 'http://localhost:8080/'
           responseCode: 302
-          timeout: 30000
-          interval: 1000
+          timeout: 60000
+          interval: 5000
 
       - name: Maven Clean Test
         run: |
