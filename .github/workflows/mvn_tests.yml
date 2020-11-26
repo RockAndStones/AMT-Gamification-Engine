@@ -17,15 +17,10 @@ jobs:
         with:
           java-version: 11
 
-      - name: Maven Package
-        run: |
-          cd gamification-impl
-          mvn clean package
-
       - name: Maven Spring Boot Run
         run: |
           cd gamification-impl
-          mvn spring-boot:run &
+          mvn clean compile spring-boot:start
 
       - name: Wait on Spring Boot
         uses: nev7n/wait_for_response@v1
