@@ -22,14 +22,6 @@ jobs:
           cd gamification-impl
           mvn clean compile spring-boot:start
 
-      - name: Wait on Spring Boot
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:8080/'
-          responseCode: 302
-          timeout: 60000
-          interval: 5000
-
       - name: Maven Clean Test
         run: |
           cd gamification-specs
