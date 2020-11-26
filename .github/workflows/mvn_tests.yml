@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     name: mvn tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
@@ -30,8 +30,8 @@ jobs:
       - name: Wait on Spring Boot
         uses: nev7n/wait_for_response@v1
         with:
-          url: 'http://localhost:3000/'
-          responseCode: 200
+          url: 'http://localhost:8080/'
+          responseCode: 302
           timeout: 30000
           interval: 1000
 
