@@ -70,7 +70,7 @@ public class BasicSteps {
     @Given("I have a event payload")
     public void i_have_a_event_payload() throws Throwable {
         event = new ch.heigvd.amt.gamification.api.dto.Event()
-                .userId("userId")
+                .userAppId("userId")
                 .timestamp(OffsetDateTime.now())
                 .eventType("type");
 //                .eventProperties(new Object());
