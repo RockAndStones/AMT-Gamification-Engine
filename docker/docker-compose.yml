@@ -24,3 +24,4 @@ services:
       MYSQL_PASSWORD: mysql
     depends_on:
       - gamification-db
+    command: bash -c "/usr/wait-for-it.sh --timeout=0 gamification-db:3306 && java -Djava.security.egd=file:/dev/./urandom -jar /app/gamification-api.jar"
