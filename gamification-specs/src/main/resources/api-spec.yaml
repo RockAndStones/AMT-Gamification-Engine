@@ -162,6 +162,25 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Application'
+  /applications/{name}:
+    get:
+      description: get one application, by name
+      operationId: getApplication
+      parameters:
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '201':
+          description: created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Application'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
   /rules:
     post:
       description: create a new rule
