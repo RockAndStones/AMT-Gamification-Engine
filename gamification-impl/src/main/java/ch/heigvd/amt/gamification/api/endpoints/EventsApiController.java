@@ -56,7 +56,6 @@ public class EventsApiController implements EventsApi {
             userEntity.setUserAppId(event.getUserAppId());
             userEntity.setBadges(new ArrayList<>());
             userEntity.setApp(app);
-            userEntity.setPoints(0.0);
             System.out.println(userEntity);
             System.out.println(userRepository.count());
             userRepository.save(userEntity);

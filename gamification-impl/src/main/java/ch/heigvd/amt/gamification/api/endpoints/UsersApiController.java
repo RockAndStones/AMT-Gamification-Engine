@@ -52,7 +52,6 @@ public class UsersApiController implements UsersApi {
 
     private User toUser(UserEntity entity) {
         User user = new User();
-        user.setPoints(entity.getPoints());
         user.setUserAppId(entity.getUserAppId());
         List<Badge> badges = new ArrayList<>();
         for (BadgeEntity badgeEntity : entity.getBadges()) {

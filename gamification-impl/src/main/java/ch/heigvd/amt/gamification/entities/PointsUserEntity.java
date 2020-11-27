@@ -4,19 +4,20 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Data
-public class UserEntity implements Serializable {
+public class PointsUserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long   id;
-    private String userAppId;
+    private long id;
 
-    @OneToMany
-    private List<BadgeEntity> badges;
+    double points;
+
+    // TODO better implementation of pk and fk
+    @ManyToOne
+    private PointScaleEntity pointScale;
 
     @ManyToOne
-    private ApplicationEntity app;
+    private UserEntity user;
 }

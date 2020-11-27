@@ -15,7 +15,9 @@ public class RuleEntity {
     private String eventType;
     private Double pointsToAdd;
     private String badgeName;
-    private Double pointToReach;
+
+    @ManyToOne
+    private PointScaleEntity pointScaleEntity;
 
     @ManyToOne
     private ApplicationEntity app;
