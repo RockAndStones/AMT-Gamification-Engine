@@ -145,7 +145,7 @@ paths:
   /applications:
     post:
       description: create a new application
-      operationId: newApplication
+      operationId: createApplication
       requestBody:
         required: true
         content:
