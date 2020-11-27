@@ -2,7 +2,7 @@ name: gamification_engine_tests
 on:
   push:
     branches-ignore:
-      - 'master'
+      - 'main'
 
 jobs:
   tests:
