@@ -1,7 +1,21 @@
-version: '3'
+version: '3.8'
 services:
-  spring:
-    image: rockandstone/gamification
-    container_name: spring
+  gamification_engine_db:
+    image: mysql:8.0.21
+    container_name: gamification_engine_db
+    restart: always
     ports:
-      - "8080:8080"
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_DATABASE=gamification_engine_db
+    volumes:
+      - ./images/mysql/init/:/docker-entrypoint-initdb.d/
+
+  gamification_engine_api:
+    image: ghcr.io/rockandstones/gamification_engine_api:latest
+    container_name: gamification_engine_api
+    ports:
+      - '8080:8080'
+    depends_on:
+      - gamification_engine_db

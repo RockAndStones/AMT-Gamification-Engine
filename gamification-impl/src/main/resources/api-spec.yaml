@@ -15,7 +15,7 @@ paths:
         content:
           'application/json':
             schema:
-                $ref: '#/components/schemas/Badge'
+              $ref: '#/components/schemas/Badge'
       responses:
         '201':
           description: Created
@@ -167,11 +167,11 @@ paths:
       description: create a new rule
       operationId: createRule
       requestBody:
-         required: true
-         content:
-           'application/json':
-             schema:
-               $ref: '#/components/schemas/Rule'
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Rule'
       responses:
         '201':
           description: New rule created
@@ -219,7 +219,53 @@ paths:
                 $ref: '#/components/schemas/User'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-
+  /pointscales:
+    get:
+      description: get the list of all pointscales
+      operationId: getPointScales
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PointScale'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    post:
+      description: create a pointscale
+      operationId: createPointScale
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/PointScale'
+      responses:
+        '201':
+          description: created
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /pointscales/{id}:
+    get:
+      description: get one pointscale, by id
+      operationId: getPointScale
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PointScale'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
 
 components:
   securitySchemes:
@@ -280,6 +326,7 @@ components:
         - description
         - eventType
         - pointsToAdd
+        - pointScaleId
       properties:
         name:
           type: string
@@ -292,15 +339,34 @@ components:
           format: double
         badgeName:
           type: string
-        pointToReach:
-          type: number
-          format: double
+        pointScaleId:
+          type: integer
     User:
       type: object
       properties:
         userAppId:
           type: string
         badges:
-            type: array
-            items:
-              $ref: '#/components/schemas/Badge'
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
+    PointScale:
+      type: object
+      required:
+        - stages
+      properties:
+        stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
+    Stage:
+      type: object
+      required:
+        - points
+        - badge
+      properties:
+        points:
+          type: number
+          format: double
+        badge:
+          $ref: '#/components/schemas/Badge'

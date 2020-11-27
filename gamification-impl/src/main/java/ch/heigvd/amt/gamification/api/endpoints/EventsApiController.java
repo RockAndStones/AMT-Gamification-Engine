@@ -7,6 +7,7 @@ import ch.heigvd.amt.gamification.repositories.EventRepository;
 import ch.heigvd.amt.gamification.api.EventsApi;
 import ch.heigvd.amt.gamification.api.model.Event;
 import ch.heigvd.amt.gamification.repositories.UserRepository;
+import ch.heigvd.amt.gamification.services.EventProcessor;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,9 @@ public class EventsApiController implements EventsApi {
     @Autowired
     ServletRequest request;
 
+    @Autowired
+    EventProcessor eventProcessor;
+
     @Override
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createEvent(@ApiParam(value = "") @Valid @RequestBody(required = false) Event event) {
@@ -62,6 +66,8 @@ public class EventsApiController implements EventsApi {
         EventEntity newEventEntity = toEventEntity(event);
         newEventEntity.setApp(app);
         eventRepository.save(newEventEntity);
+
+        eventProcessor.processEvent(app, newEventEntity);
 
         // Return the id of the event entity
         Long id = newEventEntity.getId();

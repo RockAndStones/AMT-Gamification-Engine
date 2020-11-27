@@ -3,9 +3,11 @@ package ch.heigvd.amt.gamification.api.endpoints;
 import ch.heigvd.amt.gamification.api.RulesApi;
 import ch.heigvd.amt.gamification.api.model.Rule;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
+import ch.heigvd.amt.gamification.entities.PointScaleEntity;
 import ch.heigvd.amt.gamification.entities.RuleEntity;
 import ch.heigvd.amt.gamification.repositories.ApplicationRepository;
 import ch.heigvd.amt.gamification.repositories.BadgeRepository;
+import ch.heigvd.amt.gamification.repositories.PointScaleRepository;
 import ch.heigvd.amt.gamification.repositories.RuleRepository;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class RuleApiController implements RulesApi {
     BadgeRepository badgeRepository;
 
     @Autowired
+    PointScaleRepository pointScaleRepository;
+
+    @Autowired
     ApplicationRepository applicationRepository;
 
     @Autowired
@@ -40,18 +45,25 @@ public class RuleApiController implements RulesApi {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         if(isNullOrEmpty(rule.getName()) || isNullOrEmpty(rule.getDescription()) ||
-                isNullOrEmpty(rule.getEventType()) || rule.getPointsToAdd() == null){
+                isNullOrEmpty(rule.getEventType()) || rule.getPointsToAdd() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
+        PointScaleEntity pointScaleEntity = pointScaleRepository.findByIdAndAppApiKey(rule.getPointScaleId(), app.getApiKey());
+
+        if(pointScaleEntity == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         if(rule.getBadgeName() != null) {
-            if (badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey()) == null){
+            if (badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey()) == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         }
 
         RuleEntity newRuleEntity = toRuleEntity(rule);
         newRuleEntity.setApp(app);
+        newRuleEntity.setPointScaleEntity(pointScaleEntity);
         ruleRepository.save(newRuleEntity);
 
         URI location = ServletUriComponentsBuilder
@@ -71,11 +83,6 @@ public class RuleApiController implements RulesApi {
             entity.setBadgeName(rule.getBadgeName());
         } else {
             entity.setBadgeName("");
-        }
-        if(rule.getPointToReach() != null){
-            entity.setPointToReach(rule.getPointToReach());
-        } else {
-            entity.setPointToReach(0.0);
         }
         return entity;
     }
