@@ -21,7 +21,6 @@ public class EventEntity implements Serializable {
     private String eventType;
 //    private Object eventProperties;
 
-    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private OffsetDateTime timestamp;
 
     @ManyToOne

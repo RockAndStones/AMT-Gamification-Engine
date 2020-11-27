@@ -12,6 +12,8 @@ import io.cucumber.java.en.When;
 import org.apiguardian.api.API;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -28,6 +30,8 @@ public class BasicSteps {
     Rule rule;
     Application app;
     InlineObject obj;
+    PointScale pointScale;
+    Stage stage;
 
     private ApiResponse lastApiResponse;
     private ApiResponse lastApiResponseApp;
@@ -191,6 +195,7 @@ public class BasicSteps {
                 .name("MyTestRule")
                 .description("This is the rule for a test")
                 .eventType("TestEvent")
+                .pointScaleId(1)
                 .pointsToAdd(10.0);
     }
 
@@ -200,6 +205,7 @@ public class BasicSteps {
                 .name("MyTestRule")
                 .description("This is the rule for a test")
                 .eventType("TestEvent")
+                .pointScaleId(1)
                 .pointsToAdd(10.0)
                 .badgeName("UnknownBadge");
     }
@@ -216,6 +222,31 @@ public class BasicSteps {
     public void iPOSTTheRulePayloadToTheRulesEndpoint() {
         try {
             lastApiResponse = api.createRuleWithHttpInfo(rule);
+            processApiResponse(lastApiResponse);
+        } catch (ApiException e) {
+            processApiException(e);
+        }
+    }
+
+    @Given("I have a stage payload")
+    public void iHaveAStagePayload() {
+        stage = new ch.heigvd.amt.gamification.api.dto.Stage()
+                .badge(badge)
+                .points(10.0);
+    }
+
+    @Given("I have a pointscale payload")
+    public void iHaveAPointscalePayload() {
+        List<Stage> stages = new ArrayList<>();
+        stages.add(stage);
+        pointScale = new ch.heigvd.amt.gamification.api.dto.PointScale()
+                .stages(stages);
+    }
+
+    @When("I POST the pointscale payload to the /pointscales endpoint$")
+    public void iPOSTThePointscalePayloadToThePointscalesEndpoint() {
+        try {
+            lastApiResponse = api.createPointScaleWithHttpInfo(pointScale);
             processApiResponse(lastApiResponse);
         } catch (ApiException e) {
             processApiException(e);
