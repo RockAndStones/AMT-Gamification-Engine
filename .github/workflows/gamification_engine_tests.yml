@@ -16,10 +16,22 @@ jobs:
         with:
           java-version: 11
 
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Docker-Compose Up SQL
+        run: |
+          cd docker
+          docker-compose up -d gamification_engine_db
+
       - name: Maven Spring Boot Run
         run: |
           cd gamification-impl
-          mvn clean compile spring-boot:start
+          mvn clean install spring-boot:start
 
       - name: Maven Clean Test
         run: |
