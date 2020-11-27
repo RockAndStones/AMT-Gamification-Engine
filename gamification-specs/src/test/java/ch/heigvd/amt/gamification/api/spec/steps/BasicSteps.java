@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class BasicSteps {
-
+    private final String APP_NAME = "MyTestApp2";
     private Environment environment;
     private DefaultApi api;
     static String APIKEY = "";
@@ -56,15 +56,15 @@ public class BasicSteps {
 
     @Given("I have an application payload")
     public void iHaveAnApplicationPayload() {
-        obj = new InlineObject().name("MyTestApp2");
+        obj = new InlineObject().name(APP_NAME);
     }
 
     @When("I POST the application payload to the /application endpoint$")
     public void iPOSTTheApplicationPayloadToTheApplicationEndpoint() {
         try {
-            lastApiResponseApp = api.newApplicationWithHttpInfo(obj);
+            lastApiResponseApp = api.createApplicationWithHttpInfo(obj);
             processApiResponse(lastApiResponseApp);
-            app = (Application) lastApiResponseApp.getData();
+            app = api.getApplication(APP_NAME);
             APIKEY = app.getApiKey();
         } catch (ApiException e) {
             processApiException(e);
