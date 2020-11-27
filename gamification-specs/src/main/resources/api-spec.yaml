@@ -158,10 +158,6 @@ paths:
       responses:
         '201':
           description: New application created
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Application'
   /applications/{name}:
     get:
       description: get one application, by name

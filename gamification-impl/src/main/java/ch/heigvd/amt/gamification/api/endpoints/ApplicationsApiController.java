@@ -24,7 +24,7 @@ public class ApplicationsApiController implements ApplicationsApi {
     ApplicationRepository applicationRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Application> createApplication(@ApiParam(value = "", required = true) @Valid @RequestBody InlineObject inlineObject) {
+    public ResponseEntity<Void> createApplication(@ApiParam(value = "", required = true) @Valid @RequestBody InlineObject inlineObject) {
         // todo: check conditions (unique name eventually, user authentication)
         ApplicationEntity appEntity = new ApplicationEntity();
         appEntity.setApiKey(ApplicationEntity.generateApiKey());
