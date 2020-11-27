@@ -25,8 +25,8 @@ jobs:
 
       - name: Docker-Compose Up SQL
         run: |
-        cd docker
-        docker-compose up -d underification_db
+          cd docker
+          docker-compose up -d underification_db
 
       - name: Maven Spring Boot Run
         run: |
