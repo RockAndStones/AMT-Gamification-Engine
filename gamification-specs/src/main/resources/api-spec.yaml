@@ -181,6 +181,8 @@ paths:
                 $ref: '#/components/schemas/Application'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If application name is unknown
   /rules:
     post:
       description: create a new rule
