@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  gamification-db:
+    image: mysql:8.0.21
+    container_name: gamification-db
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_DATABASE=gamification_engine_db
+    volumes:
+      - ./images/mysql/init/:/docker-entrypoint-initdb.d/
+
+  gamification-api:
+    image: ghcr.io/rockandstones/gamification-api:latest
+    container_name: gamification-api
+    ports:
+      - '8080:8080'
+    environment:
+      MYSQL_HOST: gamification-db
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: mysql
+    depends_on:
+      - gamification-db
