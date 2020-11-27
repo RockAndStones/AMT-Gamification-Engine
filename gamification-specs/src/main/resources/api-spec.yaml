@@ -1,0 +1,372 @@
+openapi: '3.0.3'
+info:
+  version: '0.1.0'
+  title: Gamification API
+  description: Description
+security:
+  #  - bearerAuth: []
+  - apiKeyAuth: []
+paths:
+  /badges:
+    post:
+      description: create badge for the website
+      operationId: createBadge
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Badge'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Parameters are empty or null
+        '409':
+          description: Badge already exists
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    get:
+      description: get the list of all badges
+      operationId: getBadges
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Badge'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /badges/{name}:
+    get:
+      description: get one badge, by name
+      operationId: getBadge
+      parameters:
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Badge'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    put:
+      description: update a badge, by name
+      operationId: putBadge
+      parameters:
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Badge'
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Badge'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      description: delete the specified badge
+      operationId: removeBadge
+      parameters:
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Badge Removed
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /events:
+    post:
+      description: create a user event
+      operationId: createEvent
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Event'
+      responses:
+        '201':
+          description: created
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    get:
+      description: get the list of all events
+      operationId: getEvents
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /events/{id}:
+    get:
+      description: get one event, by id
+      operationId: getEvent
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Event'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /applications:
+    post:
+      description: create a new application
+      operationId: newApplication
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: New application created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Application'
+  /rules:
+    post:
+      description: create a new rule
+      operationId: createRule
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Rule'
+      responses:
+        '201':
+          description: New rule created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '400':
+          description: Missing important fields
+        '404':
+          description: If badge name sent is not known
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /users:
+    get:
+      description: get the list of all users
+      operationId: getUsers
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /users/{userAppId}:
+    get:
+      description: get one user, by userAppId
+      operationId: getUser
+      parameters:
+        - in: path
+          name: userAppId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /pointscales:
+    get:
+      description: get the list of all pointscales
+      operationId: getPointScales
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PointScale'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    post:
+      description: create a pointscale
+      operationId: createPointScale
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/PointScale'
+      responses:
+        '201':
+          description: created
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /pointscales/{id}:
+    get:
+      description: get one pointscale, by id
+      operationId: getPointScale
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PointScale'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+
+components:
+  securitySchemes:
+    #    bearerAuth:            # arbitrary name for the security scheme
+    #      type: http
+    #      scheme: bearer       # warning: it HAS TO be a lowercase b for the swagger ui version used in springfox
+    #      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  parameters:
+    ApiKey:
+      description: "Application api key"
+      name: "X-API-KEY"
+      in: header
+      required: true
+      schema:
+        type: string
+  responses:
+    UnauthorizedError:
+      description: API key is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  schemas:
+    Event:
+      type: object
+      properties:
+        userAppId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        eventType:
+          type: string
+        eventProperties:
+          type: object
+    Badge:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    Application:
+      type: object
+      properties:
+        apiKey:
+          type: string
+        name:
+          type: string
+    Rule:
+      type: object
+      required:
+        - name
+        - description
+        - eventType
+        - pointsToAdd
+        - pointScaleId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        eventType:
+          type: string
+        pointsToAdd:
+          type: number
+          format: double
+        badgeName:
+          type: string
+        pointScaleId:
+          type: integer
+    User:
+      type: object
+      properties:
+        userAppId:
+          type: string
+        badges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
+    PointScale:
+      type: object
+      required:
+        - stages
+      properties:
+        stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
+    Stage:
+      type: object
+      required:
+        - points
+        - badge
+      properties:
+        points:
+          type: number
+          format: double
+        badge:
+          $ref: '#/components/schemas/Badge'

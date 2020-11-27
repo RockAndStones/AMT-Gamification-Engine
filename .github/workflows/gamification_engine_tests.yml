@@ -1,0 +1,39 @@
+name: gamification_engine_tests
+on:
+  push:
+    branches-ignore:
+      - 'master'
+
+jobs:
+  tests:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Docker-Compose Up SQL
+        run: |
+          cd docker
+          docker-compose up -d gamification_engine_db
+
+      - name: Maven Spring Boot Run
+        run: |
+          cd gamification-impl
+          mvn clean install spring-boot:start
+
+      - name: Maven Clean Test
+        run: |
+          cd gamification-specs
+          mvn clean test
