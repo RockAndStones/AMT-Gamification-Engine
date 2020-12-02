@@ -14,6 +14,9 @@ public class StageEntity implements Serializable {
     private double points;
 
     @ManyToOne
+    private PointScaleEntity pointScale;
+
+    @ManyToOne
     private BadgeEntity badge;
 
     @ManyToOne
