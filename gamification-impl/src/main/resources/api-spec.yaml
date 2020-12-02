@@ -387,6 +387,14 @@ components:
           format: double
         badge:
           $ref: '#/components/schemas/Badge'
+    UserRanking:
+      type: object
+      properties:
+        userId:
+          type: string
+        points:
+          type: number
+          format: double
     Pagination:
       type: object
       required:
@@ -401,4 +409,3 @@ components:
           type: string
         next:
           type: string
-
