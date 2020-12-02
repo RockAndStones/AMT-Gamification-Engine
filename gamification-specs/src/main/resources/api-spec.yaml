@@ -387,3 +387,17 @@ components:
           format: double
         badge:
           $ref: '#/components/schemas/Badge'
+    Pagination:
+      type: object
+      required:
+        - numberOfItems
+        - page
+      properties:
+        numberOfItems:
+          type: integer
+        page:
+          type: integer
+        previous:
+          type: string
+        next:
+          type: string
