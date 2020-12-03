@@ -49,21 +49,25 @@ public class PointScalesApiController implements PointscalesApi {
         }
 
         for (Stage stage: pointScale.getStages()) {
+            BadgeEntity badge = badgeRepository.findByNameAndAppApiKey(stage.getBadge().getName(), app.getApiKey());
             if(stage.getPoints() < 0){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            } else if(stage.getBadge() == null ||  badgeRepository.findByNameAndAppApiKey(stage.getBadge().getName(), app.getApiKey()) == null) {
+            } else if(stage.getBadge() == null || badge == null
+            || !badge.getUsable()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         }
 
         PointScaleEntity newPointScaleEntity = toPointScaleEntity(pointScale, app.getApiKey());
         newPointScaleEntity.setApp(app);
-        for (StageEntity newStageEntity : newPointScaleEntity.getStages()) {
+        pointScaleRepository.save(newPointScaleEntity);
+
+        for (Stage newStage : pointScale.getStages()) {
+            StageEntity newStageEntity = toStageEntity(newStage, app.getApiKey());
             newStageEntity.setApp(app);
+            newStageEntity.setPointScale(newPointScaleEntity);
             stageRepository.save(newStageEntity);
         }
-
-        pointScaleRepository.save(newPointScaleEntity);
 
         //TODO Que faut-il retourner ??
         URI location = ServletUriComponentsBuilder
@@ -87,7 +91,7 @@ public class PointScalesApiController implements PointscalesApi {
     private PointScale toPointScale(PointScaleEntity pointScaleEntity){
         PointScale pointScale = new PointScale();
         List<Stage> stages = new ArrayList<>();
-        for (StageEntity stageEntity : pointScaleEntity.getStages()) {
+        for (StageEntity stageEntity : stageRepository.findAllByPointScaleId(pointScaleEntity.getId())) {
             stages.add(toStage(stageEntity));
         }
         pointScale.setStages(stages);
@@ -112,16 +116,7 @@ public class PointScalesApiController implements PointscalesApi {
     }
 
     private PointScaleEntity toPointScaleEntity(PointScale pointScale, String apiKey) {
-        PointScaleEntity pointScaleEntity = new PointScaleEntity();
-        ArrayList<StageEntity> stageEntities = new ArrayList<>();
-
-        for (Stage stage : pointScale.getStages()) {
-            stageEntities.add(toStageEntity(stage, apiKey));
-        }
-
-        pointScaleEntity.setStages(stageEntities);
-
-        return pointScaleEntity;
+        return new PointScaleEntity();
     }
 
     private StageEntity toStageEntity(Stage stage, String apiKey){

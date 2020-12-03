@@ -3,6 +3,7 @@ package ch.heigvd.amt.gamification.api.endpoints;
 import ch.heigvd.amt.gamification.api.RulesApi;
 import ch.heigvd.amt.gamification.api.model.Rule;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
+import ch.heigvd.amt.gamification.entities.BadgeEntity;
 import ch.heigvd.amt.gamification.entities.PointScaleEntity;
 import ch.heigvd.amt.gamification.entities.RuleEntity;
 import ch.heigvd.amt.gamification.repositories.ApplicationRepository;
@@ -56,7 +57,9 @@ public class RuleApiController implements RulesApi {
         }
 
         if(rule.getBadgeName() != null) {
-            if (badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey()) == null) {
+            BadgeEntity badgeEntity = badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey());
+            if (badgeEntity == null ||
+                !badgeEntity.getUsable()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         }

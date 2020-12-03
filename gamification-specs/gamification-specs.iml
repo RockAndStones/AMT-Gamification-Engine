@@ -36,7 +36,7 @@
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/openapi" isTestSource="false" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="11" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: io.swagger:swagger-annotations:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.13.1" level="project" />
