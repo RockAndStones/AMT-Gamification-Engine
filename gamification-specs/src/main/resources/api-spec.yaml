@@ -151,7 +151,7 @@ paths:
   /applications:
     post:
       description: create a new application
-      operationId: newApplication
+      operationId: createApplication
       requestBody:
         required: true
         content:
@@ -164,10 +164,27 @@ paths:
       responses:
         '201':
           description: New application created
+  /applications/{name}:
+    get:
+      description: get one application, by name
+      operationId: getApplication
+      parameters:
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '201':
+          description: created
           content:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Application'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If application name is unknown
   /rules:
     post:
       description: create a new rule
