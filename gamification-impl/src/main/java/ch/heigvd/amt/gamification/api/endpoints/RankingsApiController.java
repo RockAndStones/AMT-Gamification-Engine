@@ -46,6 +46,21 @@ public class RankingsApiController implements RankingsApi {
     }
 
     @Override
+    public ResponseEntity<PaginatedUserRanking> getRankingsByEventTypePoints(String eventType) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+
+        List<UserRankingDTO> userRankings = userRepository.userRankingsByTotalPoints(app, eventType);
+        PaginatedUserRanking p = new PaginatedUserRanking();
+
+        p.data(userRankings.stream()
+                .map(this::userRankingFromDTO)
+                .collect(Collectors.toList())
+        );
+
+        return ResponseEntity.ok(p);
+    }
+
+    @Override
     public ResponseEntity<PaginatedUserRanking> getRankingsByPointScalesPoints(Long id) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
         PointScaleEntity pointScale = pointScaleRepository.findByIdAndAppApiKey(id, app.getApiKey());

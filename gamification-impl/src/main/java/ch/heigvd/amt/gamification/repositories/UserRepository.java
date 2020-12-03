@@ -36,6 +36,17 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     @Query(value =
             "SELECT " +
+                "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, COALESCE(SUM(pue.points), 0)) " +
+            "FROM UserEntity AS ue " +
+            "LEFT JOIN PointsUserEntity AS pue ON ue = pue.user " +
+            "LEFT JOIN PointScaleEntity AS pse ON pue.pointScale = pse " +
+            "LEFT JOIN RuleEntity AS re ON pse = re.pointScaleEntity " +
+            "WHERE re.app = :app AND re.eventType = :eventType " +
+            "GROUP BY ue.id, ue.userAppId")
+    List<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, @Param("eventType") String eventType);
+
+    @Query(value =
+            "SELECT " +
                 "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, ue.badges.size) " +
             "FROM UserEntity AS ue " +
             "WHERE ue.app = :app")
