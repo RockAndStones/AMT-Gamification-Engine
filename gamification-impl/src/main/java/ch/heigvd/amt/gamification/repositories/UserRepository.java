@@ -27,6 +27,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
     @Query(value =
             "SELECT " +
                 "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, ue.badges.size) " +
-            "FROM UserEntity AS ue")
+            "FROM UserEntity AS ue " +
+            "WHERE ue.app = :app")
     List<UserRankingDTO> userRankingsByBadges(@Param("app") ApplicationEntity app);
 }
