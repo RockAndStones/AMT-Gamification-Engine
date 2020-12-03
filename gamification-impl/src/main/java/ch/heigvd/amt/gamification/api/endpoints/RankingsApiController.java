@@ -37,6 +37,11 @@ public class RankingsApiController implements RankingsApi {
         return ResponseEntity.ok(p);
     }
 
+    @Override
+    public ResponseEntity<PaginatedUserRanking> getRankingsByPointScalesPoints(Integer id) {
+        return null;
+    }
+
     private UserRanking userRankingFromDTO(UserRankingDTO userRankingDTO) {
         UserRanking ur = new UserRanking();
         ur.setUserId(userRankingDTO.getUserId());

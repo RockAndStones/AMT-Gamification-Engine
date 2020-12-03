@@ -296,6 +296,25 @@ paths:
                 $ref: '#/components/schemas/PaginatedUserRanking'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+  /rankings/byPoints/pointscales/{id}:
+    get:
+      description: get the user rankings by points for a pointscale
+      operationId: getRankingsByPointScalesPoints
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
 components:
   securitySchemes:
     #    bearerAuth:            # arbitrary name for the security scheme
