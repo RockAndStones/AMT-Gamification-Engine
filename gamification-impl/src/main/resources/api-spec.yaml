@@ -309,6 +309,25 @@ paths:
                 $ref: '#/components/schemas/PaginatedUserRanking'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+  /rankings/byPoints/eventType/{eventType}:
+    get:
+      description: get the user rankings by points for a type of event
+      operationId: getRankingsByEventTypePoints
+      parameters:
+        - in: path
+          name: eventType
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints/pointscales/{id}:
     get:
       description: get the user rankings by points for a pointscale
