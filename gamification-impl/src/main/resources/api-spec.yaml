@@ -489,8 +489,10 @@ components:
       properties:
         numberOfItems:
           type: integer
+          format: int64
         page:
           type: integer
+          format: int64
         previous:
           type: string
         next:
