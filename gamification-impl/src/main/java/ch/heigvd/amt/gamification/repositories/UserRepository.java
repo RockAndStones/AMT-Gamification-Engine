@@ -18,7 +18,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "SELECT " +
                 "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, SUM(pue.points)) " +
             "FROM UserEntity AS ue " +
-            "INNER JOIN PointsUserEntity AS pue " +
+            "LEFT JOIN PointsUserEntity AS pue " +
                 "ON ue = pue.user " +
             "WHERE ue.app = :app " +
             "GROUP BY ue.userAppId")
