@@ -293,14 +293,7 @@ paths:
           content:
             'application/json':
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserRanking'
+                $ref: '#/components/schemas/PaginatedUserRanking'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
 components:
@@ -406,6 +399,15 @@ components:
           format: double
         badge:
           $ref: '#/components/schemas/Badge'
+    PaginatedUserRanking:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRanking'
     UserRanking:
       type: object
       properties:
