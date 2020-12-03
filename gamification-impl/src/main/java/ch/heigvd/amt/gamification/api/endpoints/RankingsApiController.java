@@ -2,6 +2,7 @@ package ch.heigvd.amt.gamification.api.endpoints;
 
 import ch.heigvd.amt.gamification.api.RankingsApi;
 import ch.heigvd.amt.gamification.api.model.PaginatedUserRanking;
+import ch.heigvd.amt.gamification.api.model.Pagination;
 import ch.heigvd.amt.gamification.api.model.PointScale;
 import ch.heigvd.amt.gamification.api.model.UserRanking;
 import ch.heigvd.amt.gamification.dto.UserRankingDTO;
@@ -10,6 +11,9 @@ import ch.heigvd.amt.gamification.entities.PointScaleEntity;
 import ch.heigvd.amt.gamification.repositories.PointScaleRepository;
 import ch.heigvd.amt.gamification.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,13 +38,22 @@ public class RankingsApiController implements RankingsApi {
     public ResponseEntity<PaginatedUserRanking> getRankingsByTotalPoints() {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        List<UserRankingDTO> userRankings = userRepository.userRankingsByTotalPoints(app);
-        PaginatedUserRanking p = new PaginatedUserRanking();
+        // todo implement pagination
+        Pageable page = PageRequest.of(0, 100);
+        Page<UserRankingDTO> userRankings = userRepository.userRankingsByTotalPoints(app, page);
 
+        PaginatedUserRanking p = new PaginatedUserRanking();
         p.data(userRankings.stream()
                 .map(this::userRankingFromDTO)
                 .collect(Collectors.toList())
         );
+
+        Pagination pagination = new Pagination();
+        pagination.setNumberOfItems(userRankings.getTotalElements());
+        pagination.setPage((long)page.getPageNumber());
+        pagination.setNext("#");
+        pagination.setPrevious("#");
+        p.setPagination(pagination);
 
         return ResponseEntity.ok(p);
     }

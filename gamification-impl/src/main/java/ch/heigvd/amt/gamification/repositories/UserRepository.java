@@ -4,6 +4,8 @@ import ch.heigvd.amt.gamification.dto.UserRankingDTO;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.PointScaleEntity;
 import ch.heigvd.amt.gamification.entities.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -22,7 +24,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
                 "ON ue = pue.user " +
             "WHERE ue.app = :app " +
             "GROUP BY ue.userAppId")
-    List<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app);
+    Page<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, Pageable p);
 
     @Query(value =
             "SELECT " +
