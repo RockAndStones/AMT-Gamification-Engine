@@ -23,7 +23,7 @@ public class RankingsApiController implements RankingsApi {
     ServletRequest request;
 
     @Override
-    public ResponseEntity<PaginatedUserRanking> getTotalPointsRankings() {
+    public ResponseEntity<PaginatedUserRanking> getRankingsByTotalPoints() {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         List<UserRankingDTO> userRankings = userRepository.userRankingsByTotalPoints(app);

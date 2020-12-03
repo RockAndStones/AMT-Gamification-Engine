@@ -283,10 +283,10 @@ paths:
                 $ref: '#/components/schemas/PointScale'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /rankings/totalPoints:
+  /rankings/byPoints/total:
     get:
       description: get the user rankings by total number of points
-      operationId: getTotalPointsRankings
+      operationId: getRankingsByTotalPoints
       responses:
         '200':
           description: success
