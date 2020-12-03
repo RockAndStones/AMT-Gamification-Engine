@@ -16,7 +16,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     @Query(value =
             "SELECT " +
-                "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, SUM(pue.points)) " +
+                "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, COALESCE(SUM(pue.points), 0)) " +
             "FROM UserEntity AS ue " +
             "LEFT JOIN PointsUserEntity AS pue " +
                 "ON ue = pue.user " +
@@ -26,7 +26,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     @Query(value =
             "SELECT " +
-                "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, SUM(pue.points)) " +
+                "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, COALESCE(SUM(pue.points), 0)) " +
             "FROM UserEntity AS ue " +
             "LEFT JOIN PointsUserEntity AS pue " +
                 "ON ue = pue.user " +
