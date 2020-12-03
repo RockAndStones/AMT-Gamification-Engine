@@ -1,8 +1,8 @@
 package ch.heigvd.amt.gamification.repositories;
 
-import ch.heigvd.amt.gamification.api.model.UserRanking;
 import ch.heigvd.amt.gamification.dto.UserRankingDTO;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
+import ch.heigvd.amt.gamification.entities.PointScaleEntity;
 import ch.heigvd.amt.gamification.entities.UserEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -23,6 +23,16 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "WHERE ue.app = :app " +
             "GROUP BY ue.userAppId")
     List<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app);
+
+    @Query(value =
+            "SELECT " +
+                "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, SUM(pue.points)) " +
+            "FROM UserEntity AS ue " +
+            "LEFT JOIN PointsUserEntity AS pue " +
+                "ON ue = pue.user " +
+            "WHERE ue.app = :app AND pue.pointScale = :pointScale " +
+            "GROUP BY ue.userAppId")
+    List<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, @Param("pointScale") PointScaleEntity pointScale);
 
     @Query(value =
             "SELECT " +
