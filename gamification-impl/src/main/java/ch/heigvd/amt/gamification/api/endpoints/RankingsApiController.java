@@ -42,6 +42,11 @@ public class RankingsApiController implements RankingsApi {
         return null;
     }
 
+    @Override
+    public ResponseEntity<PaginatedUserRanking> getRankingsByTotalBadges() {
+        return null;
+    }
+
     private UserRanking userRankingFromDTO(UserRankingDTO userRankingDTO) {
         UserRanking ur = new UserRanking();
         ur.setUserId(userRankingDTO.getUserId());
