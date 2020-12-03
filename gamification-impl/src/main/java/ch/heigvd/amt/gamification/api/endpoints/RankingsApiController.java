@@ -26,7 +26,7 @@ public class RankingsApiController implements RankingsApi {
     public ResponseEntity<PaginatedUserRanking> getTotalPointsRankings() {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        List<UserRankingDTO> userRankings = userRepository.getUserRankingsOfApp(app);
+        List<UserRankingDTO> userRankings = userRepository.userRankingsByTotalPoints(app);
         PaginatedUserRanking p = new PaginatedUserRanking();
 
         p.data(userRankings.stream()

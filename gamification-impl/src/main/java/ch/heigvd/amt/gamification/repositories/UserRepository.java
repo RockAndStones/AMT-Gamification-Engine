@@ -22,5 +22,5 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
                 "ON ue = pue.user " +
             "WHERE ue.app = :app " +
             "GROUP BY ue.userAppId")
-    List<UserRankingDTO> getUserRankingsOfApp(@Param("app") ApplicationEntity app);
+    List<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app);
 }
