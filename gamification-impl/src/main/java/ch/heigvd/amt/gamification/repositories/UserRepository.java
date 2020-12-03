@@ -1,15 +1,14 @@
 package ch.heigvd.amt.gamification.repositories;
 
-import ch.heigvd.amt.gamification.api.model.Application;
+import ch.heigvd.amt.gamification.api.model.UserRanking;
+import ch.heigvd.amt.gamification.dto.UserRankingDTO;
+import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.UserEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-interface UserRanking {
-    String getUserId();
-    int getPoints();
-}
+import java.util.List;
 
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
     Iterable<UserEntity> findAllByAppApiKey(String apiKey);
@@ -17,11 +16,11 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     @Query(value =
             "SELECT " +
-                "ue.userAppId AS userId, " +
-                "SUM(pue.points) AS points " +
+                "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, SUM(pue.points)) " +
             "FROM UserEntity AS ue " +
-                "JOIN PointsUserEntity AS pue " +
+            "INNER JOIN PointsUserEntity AS pue " +
+                "ON ue = pue.user " +
             "WHERE ue.app = :app " +
             "GROUP BY ue.userAppId")
-    Iterable<UserRanking> getUserRankingsOfApp(@Param("app") Application app);
+    List<UserRankingDTO> getUserRankingsOfApp(@Param("app") ApplicationEntity app);
 }
