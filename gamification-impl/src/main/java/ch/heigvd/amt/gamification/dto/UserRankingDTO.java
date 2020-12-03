@@ -8,4 +8,9 @@ import lombok.Getter;
 public class UserRankingDTO {
     private final String userId;
     private final Double points;
+
+    public UserRankingDTO(String userId, int points) {
+        this.userId = userId;
+        this.points = (double)points;
+    }
 }
