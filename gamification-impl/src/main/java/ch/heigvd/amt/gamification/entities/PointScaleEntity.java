@@ -13,9 +13,6 @@ public class PointScaleEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToMany
-    private List<StageEntity> stages;
-
     @ManyToOne
     private ApplicationEntity app;
 }

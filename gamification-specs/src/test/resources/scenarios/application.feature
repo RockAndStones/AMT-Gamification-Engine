@@ -7,3 +7,8 @@ Feature: Basic operations for applications
     Given I have an application payload
     When I POST the application payload to the /application endpoint
     Then I receive a 201 status code
+
+  Scenario: get an application
+    Given I have an application payload
+    When I GET the application payload to the /application/{name} endpoint
+    Then I receive a 200 status code

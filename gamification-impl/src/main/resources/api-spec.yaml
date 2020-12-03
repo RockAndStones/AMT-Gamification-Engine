@@ -67,11 +67,18 @@ paths:
           schema:
             type: string
           required: true
+        - in: query
+          name: usable
+          schema:
+            type: boolean
+            default: true
+          description: If the badge has to be desactivated pass this value with false
       requestBody:
         content:
           'application/json':
             schema:
               $ref: '#/components/schemas/Badge'
+        description: Pass an empty body if you would like to only modify the usable value
       responses:
         '200':
           description: success
@@ -81,6 +88,8 @@ paths:
                 $ref: '#/components/schemas/Badge'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          description: Request body was incorrect
     delete:
       description: delete the specified badge
       operationId: removeBadge
@@ -199,7 +208,7 @@ paths:
         '400':
           description: Missing important fields
         '404':
-          description: If badge name sent is not known
+          description: If badge name sent is not known or unusable
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /users:
@@ -251,6 +260,8 @@ paths:
                   $ref: '#/components/schemas/PointScale'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If badge is null or name sent is not known or badge is unusable
     post:
       description: create a pointscale
       operationId: createPointScale

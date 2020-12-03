@@ -19,6 +19,9 @@ public class EventProcessor {
     @Autowired
     BadgeRepository badgeRepository;
 
+    @Autowired
+    StageRepository stageRepository;
+
     public void processEvent(ApplicationEntity app, EventEntity event){
         UserEntity user = userRepository.findByUserAppIdAndAppApiKey(event.getUserAppId(), app.getApiKey());
         for(RuleEntity r : ruleRepository.findAllByAppApiKey(app.getApiKey())){
@@ -43,9 +46,9 @@ public class EventProcessor {
                 pointsUserEntity.setPoints(currentPoints);
                 pointsUserRepository.save(pointsUserEntity);
                 // Add badges gained in the pointScale
-                for(StageEntity stage : r.getPointScaleEntity().getStages()){
+                for(StageEntity stage : stageRepository.findAllByPointScaleId(r.getPointScaleEntity().getId())){
                     if(stage.getPoints() <= pointsUserEntity.getPoints()){
-                        if(!user.getBadges().contains(stage.getBadge())) {
+                        if(!user.getBadges().contains(stage.getBadge()) && stage.getBadge().getUsable()) {
                             user.getBadges().add(stage.getBadge());
                         }
                     }

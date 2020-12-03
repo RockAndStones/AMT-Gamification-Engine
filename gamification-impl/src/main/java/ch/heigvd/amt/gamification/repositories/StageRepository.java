@@ -4,5 +4,6 @@ import ch.heigvd.amt.gamification.entities.StageEntity;
 import org.springframework.data.repository.CrudRepository;
 
 public interface StageRepository extends CrudRepository<StageEntity, Long> {
-    StageEntity findByIdAndAppApiKey(long id, String apiKey);
+    Iterable<StageEntity> findAllByPointScaleId(long id);
+    void deleteByBadgeId(long badgeId);
 }
