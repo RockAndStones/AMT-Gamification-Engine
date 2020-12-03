@@ -44,7 +44,17 @@ public class RankingsApiController implements RankingsApi {
 
     @Override
     public ResponseEntity<PaginatedUserRanking> getRankingsByTotalBadges() {
-        return null;
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+
+        List<UserRankingDTO> userRankings = userRepository.userRankingsByBadges(app);
+        PaginatedUserRanking p = new PaginatedUserRanking();
+
+        p.data(userRankings.stream()
+                .map(this::userRankingFromDTO)
+                .collect(Collectors.toList())
+        );
+
+        return ResponseEntity.ok(p);
     }
 
     private UserRanking userRankingFromDTO(UserRankingDTO userRankingDTO) {
