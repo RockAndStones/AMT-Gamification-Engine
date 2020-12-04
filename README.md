@@ -1,13 +1,13 @@
 # AMT - Gamification Engine <img src="https://github.com/RockAndStones/AMT-Gamification-Engine/workflows/gamification_engine_tests/badge.svg?branch=dev" alt="tests">
 
 ## Table of contents
-- [Introduction](#Introduction)  
-- [Deployment](#Deployment)
-    - [Prerequisites](###Deployment)
-    - [Deploy the gamification API](#Deploy%20the%20gamification%20API)
-- [Cucumber Tests](#Cucumber%20Tests)
-    - [Prerequisites](#Cucumber%20Tests)
-    - [Run the tests](#Run%20the%20tests)
+- [Introduction](#introduction)  
+- [Deployment](#deployment)
+    - [Prerequisites](#prerequisites)
+    - [Deploy the gamification API](#deploy-the-gamification-API)
+- [Cucumber Tests](#cucumber-tests)
+    - [Prerequisites](#prerequisites-1)
+    - [Run the tests](#run-the-tests)
 
 ## Introduction
 As part of the course AMT we were asked to create a Spring Boot API to offer a gamification functionality for an application. 
