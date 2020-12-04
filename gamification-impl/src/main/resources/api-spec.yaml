@@ -294,7 +294,7 @@ paths:
                 $ref: '#/components/schemas/PointScale'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /rankings/byBadges/total:
+  /rankings/byBadges:
     get:
       description: get the user rankings by total number of badges
       operationId: getRankingsByTotalBadges
@@ -307,7 +307,7 @@ paths:
                 $ref: '#/components/schemas/PaginatedUserRanking'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /rankings/byPoints/total:
+  /rankings/byPoints:
     get:
       description: get the user rankings by total number of points
       operationId: getRankingsByTotalPoints
