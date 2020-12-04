@@ -6,6 +6,8 @@ import lombok.Setter;
 
 public class World {
     @Getter @Setter
+    User user;
+    @Getter @Setter
     Event event;
     @Getter @Setter
     Badge badge;
@@ -19,6 +21,8 @@ public class World {
     PointScale pointScale;
     @Getter @Setter
     Stage stage;
+    @Getter @Setter
+    User lastReceivedUser;
     @Getter @Setter
     Event lastReceivedEvent;
     @Getter @Setter
