@@ -54,6 +54,7 @@ public class AuthorizationFilter implements Filter {
         registrationBean.addUrlPatterns("/rules/*");
         registrationBean.addUrlPatterns("/users/*");
         registrationBean.addUrlPatterns("/pointscales/*");
+        registrationBean.addUrlPatterns("/rankings/*");
         return registrationBean;
     }
 }

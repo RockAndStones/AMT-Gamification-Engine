@@ -1,6 +1,7 @@
 package ch.heigvd.amt.gamification.api.endpoints;
 
 import ch.heigvd.amt.gamification.api.RulesApi;
+import ch.heigvd.amt.gamification.api.model.Badge;
 import ch.heigvd.amt.gamification.api.model.Rule;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.BadgeEntity;
@@ -24,9 +25,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
-public class RuleApiController implements RulesApi {
+public class RulesApiController implements RulesApi {
 
     @Autowired
     RuleRepository ruleRepository;
@@ -99,6 +102,15 @@ public class RuleApiController implements RulesApi {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(toRule(existingRuleEntity));
+    }
+
+    public ResponseEntity<List<Rule>> getRules(){
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+        List<Rule> rules = new ArrayList<>();
+        for (RuleEntity ruleEntity : ruleRepository.findAllByAppApiKey(app.getApiKey())) {
+            rules.add(toRule(ruleEntity));
+        }
+        return ResponseEntity.ok(rules);
     }
 
     private RuleEntity toRuleEntity(Rule rule) {

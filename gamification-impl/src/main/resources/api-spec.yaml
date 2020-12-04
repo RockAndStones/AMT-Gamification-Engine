@@ -189,6 +189,20 @@ paths:
         '404':
           description: If application name is unknown
   /rules:
+    get:
+      description: get the list of all rules
+      operationId: getRules
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rule'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
     post:
       description: create a new rule
       operationId: createRule
@@ -342,6 +356,86 @@ paths:
         '401':
           $ref: "#/components/responses/UnauthorizedError"
 
+  /rankings/byBadges:
+    get:
+      description: get the user rankings by total number of badges
+      operationId: getRankingsByTotalBadges
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /rankings/byPoints:
+    get:
+      description: get the user rankings by total number of points
+      operationId: getRankingsByTotalPoints
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /rankings/byPoints/eventType/{eventType}:
+    get:
+      description: get the user rankings by points for a type of event
+      operationId: getRankingsByEventTypePoints
+      parameters:
+        - in: path
+          name: eventType
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /rankings/byPoints/pointscales/{id}:
+    get:
+      description: get the user rankings by points for a pointscale
+      operationId: getRankingsByPointScalesPoints
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If point scale id sent is unknown
 components:
   securitySchemes:
     #    bearerAuth:            # arbitrary name for the security scheme
@@ -403,6 +497,8 @@ components:
         - pointsToAdd
         - pointScaleId
       properties:
+        id:
+          type: integer
         name:
           type: string
         description:
@@ -445,3 +541,35 @@ components:
           format: double
         badge:
           $ref: '#/components/schemas/Badge'
+    PaginatedUserRanking:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRanking'
+    UserRanking:
+      type: object
+      properties:
+        userId:
+          type: string
+        points:
+          type: number
+          format: double
+    Pagination:
+      type: object
+      required:
+        - numberOfItems
+        - page
+      properties:
+        numberOfItems:
+          type: integer
+          format: int64
+        page:
+          type: integer
+        previous:
+          type: string
+        next:
+          type: string
