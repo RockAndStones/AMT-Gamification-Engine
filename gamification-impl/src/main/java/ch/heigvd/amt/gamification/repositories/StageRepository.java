@@ -6,4 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 public interface StageRepository extends CrudRepository<StageEntity, Long> {
     Iterable<StageEntity> findAllByPointScaleId(long id);
     void deleteByBadgeId(long badgeId);
+    void deleteAllByPointScaleId(long pointScaleId);
 }

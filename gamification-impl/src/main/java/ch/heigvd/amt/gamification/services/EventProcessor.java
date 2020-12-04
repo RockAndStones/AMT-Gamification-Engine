@@ -34,11 +34,11 @@ public class EventProcessor {
                     }
                 }
                 // Add the points to the right pointScale
-                PointsUserEntity pointsUserEntity = pointsUserRepository.findPointsByUserIdAndPointScaleId(user.getId(), r.getPointScaleEntity().getId());
+                PointsUserEntity pointsUserEntity = pointsUserRepository.findPointsByUserIdAndPointScaleId(user.getId(), r.getPointScale().getId());
                 if(pointsUserEntity == null){
                     pointsUserEntity = new PointsUserEntity();
                     pointsUserEntity.setPoints(0.0);
-                    pointsUserEntity.setPointScale(r.getPointScaleEntity());
+                    pointsUserEntity.setPointScale(r.getPointScale());
                     pointsUserEntity.setUser(user);
                     pointsUserRepository.save(pointsUserEntity);
                 }
@@ -46,7 +46,7 @@ public class EventProcessor {
                 pointsUserEntity.setPoints(currentPoints);
                 pointsUserRepository.save(pointsUserEntity);
                 // Add badges gained in the pointScale
-                for(StageEntity stage : stageRepository.findAllByPointScaleId(r.getPointScaleEntity().getId())){
+                for(StageEntity stage : stageRepository.findAllByPointScaleId(r.getPointScale().getId())){
                     if(stage.getPoints() <= pointsUserEntity.getPoints()){
                         if(!user.getBadges().contains(stage.getBadge()) && stage.getBadge().getUsable()) {
                             user.getBadges().add(stage.getBadge());

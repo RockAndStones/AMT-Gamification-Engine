@@ -189,6 +189,20 @@ paths:
         '404':
           description: If application name is unknown
   /rules:
+    get:
+      description: get the list of all rules
+      operationId: getRules
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rule'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
     post:
       description: create a new rule
       operationId: createRule
@@ -209,6 +223,39 @@ paths:
           description: Missing important fields
         '404':
           description: If badge name sent is not known or unusable
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /rules/{id}:
+    get:
+      description: get one rules, by id
+      operationId: getRule
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      description: delete the specified rule
+      operationId: removeRule
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Rule Removed
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /users:
@@ -294,6 +341,21 @@ paths:
                 $ref: '#/components/schemas/PointScale'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      description: delete the specified pointscale
+      operationId: removePointScale
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Pointscale Removed
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+
   /rankings/byBadges:
     get:
       description: get the user rankings by total number of badges
@@ -435,6 +497,8 @@ components:
         - pointsToAdd
         - pointScaleId
       properties:
+        id:
+          type: integer
         name:
           type: string
         description:
