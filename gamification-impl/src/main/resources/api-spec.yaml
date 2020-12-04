@@ -311,6 +311,19 @@ paths:
     get:
       description: get the user rankings by total number of points
       operationId: getRankingsByTotalPoints
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
       responses:
         '200':
           description: success
@@ -492,7 +505,6 @@ components:
           format: int64
         page:
           type: integer
-          format: int64
         previous:
           type: string
         next:
