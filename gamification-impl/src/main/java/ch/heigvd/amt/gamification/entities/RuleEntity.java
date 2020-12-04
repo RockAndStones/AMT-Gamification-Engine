@@ -17,7 +17,7 @@ public class RuleEntity {
     private String badgeName;
 
     @ManyToOne
-    private PointScaleEntity pointScaleEntity;
+    private PointScaleEntity pointScale;
 
     @ManyToOne
     private ApplicationEntity app;

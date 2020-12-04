@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.ServletRequest;
@@ -66,7 +68,7 @@ public class RuleApiController implements RulesApi {
 
         RuleEntity newRuleEntity = toRuleEntity(rule);
         newRuleEntity.setApp(app);
-        newRuleEntity.setPointScaleEntity(pointScaleEntity);
+        newRuleEntity.setPointScale(pointScaleEntity);
         ruleRepository.save(newRuleEntity);
 
         URI location = ServletUriComponentsBuilder
@@ -74,6 +76,29 @@ public class RuleApiController implements RulesApi {
                 .buildAndExpand(newRuleEntity.getId()).toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @Override
+    public ResponseEntity<Void> removeRule(@ApiParam(value = "",required = true) @PathVariable("id") Integer id) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+
+        RuleEntity existingRuleEntity = ruleRepository.findByIdAndAppApiKey(id, app.getApiKey());
+        if(existingRuleEntity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        ruleRepository.delete(existingRuleEntity);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Rule> getRule(@ApiParam(value = "",required = true) @PathVariable("id") Integer id) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+
+        RuleEntity existingRuleEntity = ruleRepository.findByIdAndAppApiKey(id, app.getApiKey());
+        if(existingRuleEntity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(toRule(existingRuleEntity));
     }
 
     private RuleEntity toRuleEntity(Rule rule) {

@@ -3,17 +3,17 @@ package ch.heigvd.amt.gamification.api.endpoints;
 import ch.heigvd.amt.gamification.api.PointscalesApi;
 import ch.heigvd.amt.gamification.api.model.*;
 import ch.heigvd.amt.gamification.entities.*;
-import ch.heigvd.amt.gamification.repositories.ApplicationRepository;
-import ch.heigvd.amt.gamification.repositories.BadgeRepository;
-import ch.heigvd.amt.gamification.repositories.PointScaleRepository;
-import ch.heigvd.amt.gamification.repositories.StageRepository;
+import ch.heigvd.amt.gamification.repositories.*;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.ServletRequest;
@@ -36,6 +36,9 @@ public class PointScalesApiController implements PointscalesApi {
 
     @Autowired
     ApplicationRepository applicationRepository;
+
+    @Autowired
+    RuleRepository ruleRepository;
 
     @Autowired
     ServletRequest request;
@@ -86,6 +89,32 @@ public class PointScalesApiController implements PointscalesApi {
         }
 
         return ResponseEntity.ok(pointScales);
+    }
+
+    @Override
+    public ResponseEntity<PointScale> getPointScale(@ApiParam(value = "",required = true) @PathVariable("id") Integer id) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+
+        PointScaleEntity existingPointScaleEntity = pointScaleRepository.findByIdAndAppApiKey(id, app.getApiKey());
+        if(existingPointScaleEntity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(toPointScale(existingPointScaleEntity));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Void> removePointScale(@ApiParam(value = "",required = true) @PathVariable("id") Integer id) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+
+        PointScaleEntity existingPointScaleEntity = pointScaleRepository.findByIdAndAppApiKey(id, app.getApiKey());
+        if(existingPointScaleEntity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        stageRepository.deleteAllByPointScaleId(existingPointScaleEntity.getId());
+        ruleRepository.deleteAllByPointScaleId(existingPointScaleEntity.getId());
+        pointScaleRepository.delete(existingPointScaleEntity);
+        return ResponseEntity.ok().build();
     }
 
     private PointScale toPointScale(PointScaleEntity pointScaleEntity){

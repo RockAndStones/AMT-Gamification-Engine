@@ -211,6 +211,39 @@ paths:
           description: If badge name sent is not known or unusable
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+  /rules/{id}:
+    get:
+      description: get one rules, by id
+      operationId: getRule
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Rule'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      description: delete the specified rule
+      operationId: removeRule
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Rule Removed
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
   /users:
     get:
       description: get the list of all users
@@ -292,6 +325,20 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/PointScale'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    delete:
+      description: delete the specified pointscale
+      operationId: removePointScale
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Pointscale Removed
         '401':
           $ref: "#/components/responses/UnauthorizedError"
 
