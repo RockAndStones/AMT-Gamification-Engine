@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,15 +34,15 @@ public class RankingsApiController implements RankingsApi {
     PointScaleRepository pointScaleRepository;
 
     @Autowired
-    ServletRequest request;
+    HttpServletRequest request;
 
     @Override
-    public ResponseEntity<PaginatedUserRanking> getRankingsByTotalPoints() {
+    public ResponseEntity<PaginatedUserRanking> getRankingsByTotalPoints(@Valid Integer page, @Valid Integer pageSize) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         // todo implement pagination
-        Pageable page = PageRequest.of(0, 100);
-        Page<UserRankingDTO> userRankings = userRepository.userRankingsByTotalPoints(app, page);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<UserRankingDTO> userRankings = userRepository.userRankingsByTotalPoints(app, pageable);
 
         PaginatedUserRanking p = new PaginatedUserRanking();
         p.data(userRankings.stream()
@@ -50,9 +52,20 @@ public class RankingsApiController implements RankingsApi {
 
         Pagination pagination = new Pagination();
         pagination.setNumberOfItems(userRankings.getTotalElements());
-        pagination.setPage((long)page.getPageNumber());
-        pagination.setNext("#");
-        pagination.setPrevious("#");
+        pagination.setPage(userRankings.getNumber());
+
+        if (userRankings.hasPrevious())
+            pagination.setPrevious(String.format("%s?page=%d&pageSize=%d",
+                    request.getRequestURI(),
+                    userRankings.getNumber() - 1,
+                    userRankings.getTotalElements()));
+
+        if (userRankings.hasNext())
+            pagination.setNext(String.format("%s?page=%d&pageSize=%d",
+                    request.getRequestURI(),
+                    userRankings.getNumber() + 1,
+                    userRankings.getTotalElements()));
+
         p.setPagination(pagination);
 
         return ResponseEntity.ok(p);
