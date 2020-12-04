@@ -5,13 +5,17 @@ import ch.heigvd.amt.gamification.api.model.Badge;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.BadgeEntity;
 import ch.heigvd.amt.gamification.repositories.BadgeRepository;
+import ch.heigvd.amt.gamification.repositories.StageRepository;
+import ch.heigvd.amt.gamification.repositories.UserRepository;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,6 +31,12 @@ public class BadgesApiController implements BadgesApi {
 
     @Autowired
     BadgeRepository badgeRepository;
+
+    @Autowired
+    StageRepository stageRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     ServletRequest request;
@@ -76,26 +86,35 @@ public class BadgesApiController implements BadgesApi {
     }
 
     @Override
-    public ResponseEntity<Badge> putBadge(@ApiParam(value = "",required=true) @PathVariable("name") String name,@ApiParam(value = ""  )  @Valid @RequestBody(required = false) Badge badge){
+    public ResponseEntity<Badge> putBadge(@ApiParam(value = "",required = true) @PathVariable("name") String name,
+                                          @ApiParam(value = "If the badge has to be desactivated pass this value with false",defaultValue = "true") @Valid @RequestParam(value = "usable",required = false,defaultValue = "true") Boolean usable,
+                                          @ApiParam("") @Valid @RequestBody(required = false) Badge badge) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-
-        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(badge.getName(), app.getApiKey());
-        if(existingBadgeEntity != null){
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        // TODO Better solution ?
+        if(badge == null || badge.getName() == null || badge.getDescription() == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, app.getApiKey());
+        BadgeEntity existingBadgeEntity = badgeRepository.findByNameAndAppApiKey(name, app.getApiKey());
         if(existingBadgeEntity == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        existingBadgeEntity.setName(badge.getName());
+
+        if(!name.equals(badge.getName())) {
+            if (badgeRepository.findByNameAndAppApiKey(badge.getName(), app.getApiKey()) != null) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT);
+            }
+            existingBadgeEntity.setName(badge.getName());
+        }
         existingBadgeEntity.setDescription(badge.getDescription());
+        existingBadgeEntity.setUsable(usable);
         badgeRepository.save(existingBadgeEntity);
 
         return ResponseEntity.ok(toBadge(existingBadgeEntity));
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Void> removeBadge(@ApiParam(value = "",required=true) @PathVariable("name") String name) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
@@ -103,6 +122,7 @@ public class BadgesApiController implements BadgesApi {
         if(existingBadgeEntity == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        stageRepository.deleteByBadgeId(existingBadgeEntity.getId());
         badgeRepository.delete(existingBadgeEntity);
         return ResponseEntity.ok().build();
     }
@@ -111,6 +131,7 @@ public class BadgesApiController implements BadgesApi {
         BadgeEntity entity = new BadgeEntity();
         entity.setName(badge.getName());
         entity.setDescription(badge.getDescription());
+        entity.setUsable(true);
         return entity;
     }
 

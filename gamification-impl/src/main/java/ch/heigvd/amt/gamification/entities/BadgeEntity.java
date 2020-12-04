@@ -14,6 +14,7 @@ public class BadgeEntity implements Serializable {
     private long id;
     private String name;
     private String description;
+    private Boolean usable;
 
     @ManyToOne
     private ApplicationEntity app;

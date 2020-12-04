@@ -67,11 +67,18 @@ paths:
           schema:
             type: string
           required: true
+        - in: query
+          name: usable
+          schema:
+            type: boolean
+            default: true
+          description: If the badge has to be desactivated pass this value with false
       requestBody:
         content:
           'application/json':
             schema:
               $ref: '#/components/schemas/Badge'
+        description: Pass an empty body if you would like to only modify the usable value
       responses:
         '200':
           description: success
@@ -81,6 +88,8 @@ paths:
                 $ref: '#/components/schemas/Badge'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '400':
+          description: Request body was incorrect
     delete:
       description: delete the specified badge
       operationId: removeBadge
@@ -145,7 +154,7 @@ paths:
   /applications:
     post:
       description: create a new application
-      operationId: newApplication
+      operationId: createApplication
       requestBody:
         required: true
         content:
@@ -158,10 +167,27 @@ paths:
       responses:
         '201':
           description: New application created
+  /applications/{name}:
+    get:
+      description: get one application, by name
+      operationId: getApplication
+      parameters:
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+      responses:
+        '201':
+          description: created
           content:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Application'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If application name is unknown
   /rules:
     post:
       description: create a new rule
@@ -182,7 +208,7 @@ paths:
         '400':
           description: Missing important fields
         '404':
-          description: If badge name sent is not known
+          description: If badge name sent is not known or unusable
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /users:
@@ -234,6 +260,8 @@ paths:
                   $ref: '#/components/schemas/PointScale'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If badge is null or name sent is not known or badge is unusable
     post:
       description: create a pointscale
       operationId: createPointScale
@@ -266,7 +294,86 @@ paths:
                 $ref: '#/components/schemas/PointScale'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-
+  /rankings/byBadges/total:
+    get:
+      description: get the user rankings by total number of badges
+      operationId: getRankingsByTotalBadges
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /rankings/byPoints/total:
+    get:
+      description: get the user rankings by total number of points
+      operationId: getRankingsByTotalPoints
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /rankings/byPoints/eventType/{eventType}:
+    get:
+      description: get the user rankings by points for a type of event
+      operationId: getRankingsByEventTypePoints
+      parameters:
+        - in: path
+          name: eventType
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /rankings/byPoints/pointscales/{id}:
+    get:
+      description: get the user rankings by points for a pointscale
+      operationId: getRankingsByPointScalesPoints
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRanking'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If point scale id sent is unknown
 components:
   securitySchemes:
     #    bearerAuth:            # arbitrary name for the security scheme
@@ -370,3 +477,35 @@ components:
           format: double
         badge:
           $ref: '#/components/schemas/Badge'
+    PaginatedUserRanking:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRanking'
+    UserRanking:
+      type: object
+      properties:
+        userId:
+          type: string
+        points:
+          type: number
+          format: double
+    Pagination:
+      type: object
+      required:
+        - numberOfItems
+        - page
+      properties:
+        numberOfItems:
+          type: integer
+          format: int64
+        page:
+          type: integer
+        previous:
+          type: string
+        next:
+          type: string
