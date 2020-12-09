@@ -135,6 +135,7 @@ public class RulesApiController implements RulesApi {
         rule.setPointsToAdd(entity.getPointsToAdd());
         rule.setBadgeName(entity.getBadgeName());
         rule.setPointsToAdd(entity.getPointsToAdd());
+        rule.setPointScaleId((int)entity.getPointScale().getId());
         return rule;
     }
 

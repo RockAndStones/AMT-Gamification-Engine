@@ -6,11 +6,14 @@ import ch.heigvd.amt.gamification.api.dto.PointScale;
 import ch.heigvd.amt.gamification.api.dto.Rule;
 import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.api.spec.helpers.World;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class RuleSteps {
@@ -47,12 +50,32 @@ public class RuleSteps {
                 .badgeName("UnknownBadge"));
     }
 
+    @Given("I have a rule payload with an unknown pointscale")
+    public void iHaveARulePayloadWithAnUnknownPointscale() {
+        world.setRule(new ch.heigvd.amt.gamification.api.dto.Rule()
+                .name("MyTestRule")
+                .description("This is the rule for a test")
+                .eventType("TestEvent")
+                .pointScaleId(10)
+                .pointsToAdd(10.0));
+    }
+
     @Given("I have a rule payload with missing information")
     public void iHaveARulePayloadWithMissingInformation() {
         world.setRule(new ch.heigvd.amt.gamification.api.dto.Rule()
                 .name("MyTestRule")
                 .description("This is the rule for a test")
                 .pointsToAdd(10.0));
+    }
+
+    @Then("I have a rule id")
+    public void iHaveARuleId() {
+        assertNotEquals(id, -1);
+    }
+
+    @Given("I have an unknown rule id")
+    public void iHaveAnUnknownRuleId() {
+        id = -1;
     }
 
     @When("I POST the rule payload to the /rules endpoint$")
@@ -63,11 +86,6 @@ public class RuleSteps {
         } catch (ApiException e) {
             environment.processApiException(e);
         }
-    }
-
-    @Given("I have a rule id")
-    public void iHaveARuleId() {
-        assertNotEquals(id, -1);
     }
 
     @When("I send DELETE the rule id to the \\/rules\\/\\{id} endpoint$")
@@ -90,5 +108,33 @@ public class RuleSteps {
         } catch (ApiException e) {
             environment.processApiException(e);
         }
+    }
+
+    @When("I send a GET to the /rules/\\{id} endpoint$")
+    public void iSendAGETToTheRulesIdEndpoint() {
+        try {
+            environment.setLastApiResponse(api.getRuleWithHttpInfo(id));
+            environment.processApiResponse(environment.getLastApiResponse());
+            world.setLastReceivedRule((Rule) environment.getLastApiResponse().getData());
+        } catch (ApiException e) {
+            environment.processApiException(e);
+        }
+    }
+
+    @When("I send a GET to the \\/rules endpoint$")
+    public void iSendAGETToTheRulesEndpoint() {
+        try {
+            environment.setLastApiResponse(api.getRulesWithHttpInfo());
+            environment.processApiResponse(environment.getLastApiResponse());
+        } catch (ApiException e) {
+            environment.processApiException(e);
+        }
+    }
+
+    @And("I receive a payload that is the same as the rule payload")
+    public void iReceiveAPayloadThatIsTheSameAsTheLastRulePayload() {
+        // The database doesn't send a badge null
+        world.getRule().setBadgeName("");
+        assertEquals(world.getRule(), world.getLastReceivedRule());
     }
 }
