@@ -14,3 +14,8 @@ Feature: Basic operations for users
     When I send a GET to the /users endpoint
     Then I receive a 200 status code
 
+  Scenario: get an unknown user
+    Given I have an unknown user
+    When I send a GET to the /users/{userAppId} endpoint
+    Then I receive a 404 status code
+

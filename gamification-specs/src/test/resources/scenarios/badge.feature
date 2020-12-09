@@ -79,3 +79,6 @@ Feature: Basic operations for applications
     Then I receive a 201 status code
     When I send a PUT to the /badge/{name} endpoint
     Then I receive a 409 status code
+    Given I have a badge payload
+    When I send a DELETE to the /badge/{name} endpoint
+    Then I receive a 200 status code
