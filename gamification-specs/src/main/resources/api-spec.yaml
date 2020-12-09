@@ -497,8 +497,6 @@ components:
         - pointsToAdd
         - pointScaleId
       properties:
-        id:
-          type: integer
         name:
           type: string
         description:

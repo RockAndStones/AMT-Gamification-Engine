@@ -55,6 +55,16 @@ public class RuleSteps {
                 .pointsToAdd(10.0));
     }
 
+    @Given("I have a rule payload with same eventype and pointscale")
+    public void iHaveARulePayloadWithSameEventypeAndPointscale() {
+        world.setRule(new ch.heigvd.amt.gamification.api.dto.Rule()
+                .name("MyTestRuleWithSameEventAndPointScale")
+                .description("This is the rule for a test")
+                .eventType("TestEvent")
+                .pointScaleId(2)
+                .pointsToAdd(20.0));
+    }
+
     @When("I POST the rule payload to the /rules endpoint$")
     public void iPOSTTheRulePayloadToTheRulesEndpoint() {
         try {
