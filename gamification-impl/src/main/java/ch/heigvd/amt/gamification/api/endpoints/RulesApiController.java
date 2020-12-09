@@ -69,7 +69,11 @@ public class RulesApiController implements RulesApi {
             }
         }
 
-        // Verify rule does not exist already
+        // If a rule has the same apikey, same event type and same point scale id we refuse the creation
+        // Because this could become a big problem and rules could become unmanageable
+        if(ruleRepository.findByPointScaleIdAndEventTypeAndAppApiKey(rule.getPointScaleId(), rule.getEventType(), app.getApiKey()) != null){
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
 
         RuleEntity newRuleEntity = toRuleEntity(rule);
         newRuleEntity.setApp(app);
