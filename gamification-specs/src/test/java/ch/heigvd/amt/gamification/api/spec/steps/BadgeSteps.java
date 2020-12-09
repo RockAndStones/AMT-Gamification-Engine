@@ -37,6 +37,33 @@ public class BadgeSteps {
                 .description(""));
     }
 
+    @Given("I have an unknown badge payload")
+    public void iHaveAnUnknownBadgePayload() {
+        world.setBadge(new ch.heigvd.amt.gamification.api.dto.Badge()
+                .name("unknownBadge")
+                .description("My unknown badge"));
+    }
+
+    @Given("I have a wrong badge payload")
+    public void iHaveAWrongBadgePayload() {
+        world.setBadge(new ch.heigvd.amt.gamification.api.dto.Badge()
+                .description("My unknown badge"));
+    }
+
+    @Given("I have a modified badge payload")
+    public void iHaveAModifiedBadgePayload() {
+        world.setBadge(new ch.heigvd.amt.gamification.api.dto.Badge()
+                .name("MyModifiedBadge")
+                .description("This is my modified badge"));
+    }
+
+    @Given("I have another badge payload")
+    public void iHaveAnotherBadgePayload() {
+        world.setBadge(new ch.heigvd.amt.gamification.api.dto.Badge()
+                .name("MyOtherTestBadge")
+                .description("This is my other test badge"));
+    }
+
     @When("I POST the badge payload to the /badges endpoint$")
     public void iPOSTTheBadgePayloadToTheBadgesEndpoint() {
         try {
@@ -68,11 +95,6 @@ public class BadgeSteps {
         }
     }
 
-    @And("I receive a payload that is the same as the created badge payload")
-    public void iReceiveAPayloadThatIsTheSameAsTheCreatedBadgePayload() {
-        assertEquals(world.getBadge(), world.getLastReceivedBadge());
-    }
-
     @When("I send a DELETE to the /badge/\\{name} endpoint$")
     public void iSendADELETEToTheBadgeNameEndpoint() {
         try {
@@ -82,5 +104,21 @@ public class BadgeSteps {
         } catch (ApiException e) {
             environment.processApiException(e);
         }
+    }
+
+    @When("I send a PUT to the /badge/\\{name} endpoint$")
+    public void iSendAPUTToTheBadgeNameEndpoint() {
+        try {
+            environment.setLastApiResponse(api.putBadgeWithHttpInfo("MyTestBadge", true, world.getBadge()));
+            environment.processApiResponse(environment.getLastApiResponse());
+            world.setLastReceivedBadge((Badge) environment.getLastApiResponse().getData());
+        } catch (ApiException e) {
+            environment.processApiException(e);
+        }
+    }
+
+    @And("I receive a payload that is the same as the last badge payload")
+    public void iReceiveAPayloadThatIsTheSameAsTheCreatedBadgePayload() {
+        assertEquals(world.getBadge(), world.getLastReceivedBadge());
     }
 }
