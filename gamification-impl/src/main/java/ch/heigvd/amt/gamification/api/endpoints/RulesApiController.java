@@ -69,6 +69,8 @@ public class RulesApiController implements RulesApi {
             }
         }
 
+        // Verify rule does not exist already
+
         RuleEntity newRuleEntity = toRuleEntity(rule);
         newRuleEntity.setApp(app);
         newRuleEntity.setPointScale(pointScaleEntity);
