@@ -355,7 +355,25 @@ paths:
           description: Pointscale Removed
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-
+  /statistics/{userAppId}/progression:
+    get:
+      description: get the user progression by overall points
+      operationId: getUserOverallProgression
+      parameters:
+        - in: path
+          name: userAppId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PointsProgression'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
   /rankings/byBadges:
     get:
       description: get the user rankings by total number of badges
@@ -570,4 +588,24 @@ components:
         previous:
           type: string
         next:
+          type: string
+    PointsProgression:
+      type: object
+      properties:
+        userAppId:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PointsProgressionData'
+    PointsProgressionData:
+      type: object
+      properties:
+        points:
+          type: number
+          format: double
+        timestamp:
+          type: string
+          format: date-time
+        eventType:
           type: string
