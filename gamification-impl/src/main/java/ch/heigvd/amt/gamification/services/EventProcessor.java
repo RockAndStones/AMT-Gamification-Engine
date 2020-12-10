@@ -22,6 +22,9 @@ public class EventProcessor {
     @Autowired
     StageRepository stageRepository;
 
+    @Autowired
+    PointsHistoryRepository pointsHistoryRepository;
+
     public void processEvent(ApplicationEntity app, EventEntity event){
         UserEntity user = userRepository.findByUserAppIdAndAppApiKey(event.getUserAppId(), app.getApiKey());
         for(RuleEntity r : ruleRepository.findAllByAppApiKey(app.getApiKey())){
@@ -42,6 +45,12 @@ public class EventProcessor {
                     pointsUserEntity.setUser(user);
                     pointsUserRepository.save(pointsUserEntity);
                 }
+                PointsHistoryEntity pointsHistory = new PointsHistoryEntity();
+                pointsHistory.setEvent(event);
+                pointsHistory.setPointScale(r.getPointScale());
+                pointsHistory.setNbPoints(r.getPointsToAdd());
+                pointsHistoryRepository.save(pointsHistory);
+
                 double currentPoints = pointsUserEntity.getPoints() + r.getPointsToAdd();
                 pointsUserEntity.setPoints(currentPoints);
                 pointsUserRepository.save(pointsUserEntity);
