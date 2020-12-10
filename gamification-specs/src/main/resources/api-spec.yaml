@@ -374,6 +374,30 @@ paths:
                 $ref: '#/components/schemas/PointsProgression'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+  /statistics/{userAppId}/progression/{pointScaleId}:
+    get:
+      description: get the user progression by overall points
+      operationId: getUserProgressionByPointScale
+      parameters:
+        - in: path
+          name: userAppId
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: pointScaleId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PointsProgression'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
   /rankings/byBadges:
     get:
       description: get the user rankings by total number of badges
