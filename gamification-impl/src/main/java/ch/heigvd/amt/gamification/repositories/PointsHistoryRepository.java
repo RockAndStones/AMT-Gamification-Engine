@@ -5,16 +5,18 @@ import ch.heigvd.amt.gamification.entities.PointsHistoryEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 public interface PointsHistoryRepository extends CrudRepository<PointsHistoryEntity, Long> {
     @Query(value =
             "SELECT PointsHistoryEntity " +
             "FROM PointsHistoryEntity " +
             "WHERE event.userAppId = :user")
-    Iterable<PointsHistoryEntity> findAllByUser(String user);
+    List<PointsHistoryEntity> findAllByUser(String user);
 
     @Query(value =
             "SELECT PointsHistoryEntity " +
             "FROM PointsHistoryEntity " +
             "WHERE event.userAppId = :user AND pointScale = :pointScale")
-    Iterable<PointsHistoryEntity> findAllByUserAndPointScale(String user, PointScaleEntity pointScale);
+    List<PointsHistoryEntity> findAllByUserAndPointScale(String user, PointScaleEntity pointScale);
 }
