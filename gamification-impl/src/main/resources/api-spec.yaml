@@ -304,7 +304,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PointScale'
+                  $ref: '#/components/schemas/PointScaleInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '404':
@@ -338,7 +338,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PointScale'
+                $ref: '#/components/schemas/PointScaleInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     delete:
@@ -562,6 +562,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Badge'
+    PointScaleInfo:
+      type: object
+      required:
+        - stages
+      properties:
+        id:
+          type: integer
+        stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
     PointScale:
       type: object
       required:
