@@ -2,7 +2,7 @@ package ch.heigvd.amt.gamification.api.endpoints;
 
 import ch.heigvd.amt.gamification.api.ApplicationsApi;
 import ch.heigvd.amt.gamification.api.model.Application;
-import ch.heigvd.amt.gamification.api.model.InlineObject;
+import ch.heigvd.amt.gamification.api.model.NewApplication;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.repositories.ApplicationRepository;
 import io.swagger.annotations.ApiParam;
@@ -24,11 +24,11 @@ public class ApplicationsApiController implements ApplicationsApi {
     ApplicationRepository applicationRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createApplication(@ApiParam(value = "", required = true) @Valid @RequestBody InlineObject inlineObject) {
+    public ResponseEntity<Void> createApplication(@ApiParam(value = "", required = true) @Valid @RequestBody NewApplication newApplication) {
         // todo: check conditions (unique name eventually, user authentication)
         ApplicationEntity appEntity = new ApplicationEntity();
         appEntity.setApiKey(ApplicationEntity.generateApiKey());
-        appEntity.setName(inlineObject.getName());
+        appEntity.setName(newApplication.getName());
         applicationRepository.save(appEntity);
 
         URI location = ServletUriComponentsBuilder

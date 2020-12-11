@@ -3,8 +3,7 @@ package ch.heigvd.amt.gamification.api.spec.steps;
 import ch.heigvd.amt.gamification.ApiException;
 import ch.heigvd.amt.gamification.api.DefaultApi;
 import ch.heigvd.amt.gamification.api.dto.Application;
-import ch.heigvd.amt.gamification.api.dto.Badge;
-import ch.heigvd.amt.gamification.api.dto.InlineObject;
+import ch.heigvd.amt.gamification.api.dto.NewApplication;
 import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.api.spec.helpers.World;
 import io.cucumber.java.en.Given;
@@ -32,18 +31,18 @@ public class ApplicationSteps {
 
     @Given("I have an application payload")
     public void iHaveAnApplicationPayload() {
-        world.setObj(new InlineObject().name("MyTestApp2"));
+        world.setNewApp(new NewApplication().name("MyTestApp2"));
     }
 
     @Given("I have an unknown application payload")
     public void iHaveAnUnknownApplicationPayload() {
-        world.setObj(new InlineObject().name("MyUnknown application"));
+        world.setNewApp(new NewApplication().name("MyUnknown application"));
     }
 
     @When("I POST the application payload to the /application endpoint$")
     public void iPOSTTheApplicationPayloadToTheApplicationEndpoint() {
         try {
-            environment.setLastApiResponseApp(api.createApplicationWithHttpInfo(world.getObj()));
+            environment.setLastApiResponseApp(api.createApplicationWithHttpInfo(world.getNewApp()));
             environment.processApiResponse(environment.getLastApiResponseApp());
             World.setApp((Application) environment.getLastApiResponseApp().getData());
         } catch (ApiException e) {
@@ -59,7 +58,7 @@ public class ApplicationSteps {
     @When("I GET the application payload to the /application/\\{name} endpoint$")
     public void iGETTheApplicationPayloadToTheApplicationNameEndpoint() {
         try {
-            environment.setLastApiResponse(api.getApplicationWithHttpInfo(world.getObj().getName()));
+            environment.setLastApiResponse(api.getApplicationWithHttpInfo(world.getNewApp().getName()));
             environment.processApiResponse(environment.getLastApiResponse());
             World.setApp((Application) environment.getLastApiResponse().getData());
         } catch (ApiException e) {
