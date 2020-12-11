@@ -200,7 +200,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Rule'
+                  $ref: '#/components/schemas/RuleInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     post:
@@ -338,7 +338,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PointScaleInfo'
+                $ref: '#/components/schemas/PointScale'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     delete:
@@ -540,6 +540,31 @@ components:
         - pointsToAdd
         - pointScaleId
       properties:
+        name:
+          type: string
+        description:
+          type: string
+        eventType:
+          type: string
+        pointsToAdd:
+          type: number
+          format: double
+        badgeName:
+          type: string
+        pointScaleId:
+          type: integer
+    RuleInfo:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - eventType
+        - pointsToAdd
+        - pointScaleId
+      properties:
+        id:
+          type: integer
         name:
           type: string
         description:
