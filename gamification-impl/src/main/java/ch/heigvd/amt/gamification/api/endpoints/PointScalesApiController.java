@@ -80,12 +80,12 @@ public class PointScalesApiController implements PointscalesApi {
         return ResponseEntity.created(location).build();
     }
 
-    public ResponseEntity<List<PointScale>> getPointScales() {
+    public ResponseEntity<List<PointScaleInfo>> getPointScales() {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        List<PointScale> pointScales = new ArrayList<>();
+        List<PointScaleInfo> pointScales = new ArrayList<>();
         for (PointScaleEntity pointScaleEntity : pointScaleRepository.findAllByAppApiKey(app.getApiKey())) {
-            pointScales.add(toPointScale(pointScaleEntity));
+            pointScales.add(toPointScaleInfo(pointScaleEntity));
         }
 
         return ResponseEntity.ok(pointScales);
@@ -124,6 +124,18 @@ public class PointScalesApiController implements PointscalesApi {
             stages.add(toStage(stageEntity));
         }
         pointScale.setStages(stages);
+
+        return pointScale;
+    }
+
+    private PointScaleInfo toPointScaleInfo(PointScaleEntity pointScaleEntity) {
+        PointScaleInfo pointScale = new PointScaleInfo();
+        List<Stage> stages = new ArrayList<>();
+        for (StageEntity stageEntity : stageRepository.findAllByPointScaleId(pointScaleEntity.getId())) {
+            stages.add(toStage(stageEntity));
+        }
+        pointScale.setStages(stages);
+        pointScale.setId((int) pointScaleEntity.getId());
 
         return pointScale;
     }

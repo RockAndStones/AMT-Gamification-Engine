@@ -4,6 +4,7 @@ import ch.heigvd.amt.gamification.ApiException;
 import ch.heigvd.amt.gamification.api.DefaultApi;
 import ch.heigvd.amt.gamification.api.dto.PointScale;
 import ch.heigvd.amt.gamification.api.dto.Rule;
+import ch.heigvd.amt.gamification.api.dto.RuleInfo;
 import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.api.spec.helpers.World;
 import io.cucumber.java.en.And;
@@ -20,7 +21,6 @@ public class RuleSteps {
     private Environment environment;
     private DefaultApi api;
     private World world;
-    private int id = -1;
 
     public RuleSteps(Environment environment, World world){
         this.environment = environment;
@@ -35,7 +35,7 @@ public class RuleSteps {
                 .name("MyTestRule")
                 .description("This is the rule for a test")
                 .eventType("TestEvent")
-                .pointScaleId(2)
+                .pointScaleId(world.getPointScaleInfo().getId())
                 .pointsToAdd(10.0));
     }
 
@@ -45,7 +45,7 @@ public class RuleSteps {
                 .name("MyTestRule")
                 .description("This is the rule for a test")
                 .eventType("TestEvent")
-                .pointScaleId(2)
+                .pointScaleId(world.getPointScaleInfo().getId())
                 .pointsToAdd(10.0)
                 .badgeName("UnknownBadge"));
     }
@@ -74,18 +74,19 @@ public class RuleSteps {
                 .name("MyTestRuleWithSameEventAndPointScale")
                 .description("This is the rule for a test")
                 .eventType("TestEvent")
-                .pointScaleId(2)
+                .pointScaleId(world.getPointScaleInfo().getId())
                 .pointsToAdd(20.0));
     }
 
     @Then("I have a rule id")
     public void iHaveARuleId() {
-        assertNotEquals(id, -1);
+        assertNotEquals((int) world.getRuleInfo().getId(), -1);
     }
 
     @Given("I have an unknown rule id")
     public void iHaveAnUnknownRuleId() {
-        id = -1;
+        world.setRuleInfo(new ch.heigvd.amt.gamification.api.dto.RuleInfo()
+                .id(-1));
     }
 
     @When("I POST the rule payload to the /rules endpoint$")
@@ -101,7 +102,7 @@ public class RuleSteps {
     @When("I send DELETE the rule id to the \\/rules\\/\\{id} endpoint$")
     public void iSendDELETETheRuleIdToTheRulesIdEndpoint() {
         try {
-            environment.setLastApiResponse(api.removeRuleWithHttpInfo(id));
+            environment.setLastApiResponse(api.removeRuleWithHttpInfo(world.getRuleInfo().getId()));
             environment.processApiResponse(environment.getLastApiResponse());
         } catch (ApiException e) {
             environment.processApiException(e);
@@ -113,8 +114,8 @@ public class RuleSteps {
         try {
             environment.setLastApiResponse(api.getRulesWithHttpInfo());
             environment.processApiResponse(environment.getLastApiResponse());
-            List<Rule> rules = (List<Rule>) environment.getLastApiResponse().getData();
-            id = rules.size();
+            List<RuleInfo> rules = (List<RuleInfo>) environment.getLastApiResponse().getData();
+            world.setRuleInfo(rules.get(rules.size() - 1));
         } catch (ApiException e) {
             environment.processApiException(e);
         }
@@ -123,7 +124,7 @@ public class RuleSteps {
     @When("I send a GET to the /rules/\\{id} endpoint$")
     public void iSendAGETToTheRulesIdEndpoint() {
         try {
-            environment.setLastApiResponse(api.getRuleWithHttpInfo(id));
+            environment.setLastApiResponse(api.getRuleWithHttpInfo(world.getRuleInfo().getId()));
             environment.processApiResponse(environment.getLastApiResponse());
             world.setLastReceivedRule((Rule) environment.getLastApiResponse().getData());
         } catch (ApiException e) {

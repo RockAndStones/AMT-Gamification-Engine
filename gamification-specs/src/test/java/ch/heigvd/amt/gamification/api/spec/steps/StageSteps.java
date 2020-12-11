@@ -23,4 +23,18 @@ public class StageSteps {
                 .badge(world.getBadge())
                 .points(10.0));
     }
+
+    @Given("I have a stage payload with an unknown badge")
+    public void iHaveAStagePayloadWithAnUnknownBadge() {
+        world.setStage(new ch.heigvd.amt.gamification.api.dto.Stage()
+                .badge(world.getBadge())
+                .points(10.0));
+    }
+
+    @Given("I have a stage payload with negative points")
+    public void iHaveAStagePayloadWithNegativePoints() {
+        world.setStage(new ch.heigvd.amt.gamification.api.dto.Stage()
+                .badge(world.getBadge())
+                .points(-10.0));
+    }
 }
