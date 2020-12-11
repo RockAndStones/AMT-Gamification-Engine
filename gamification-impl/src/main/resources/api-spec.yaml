@@ -590,6 +590,7 @@ components:
     PointScaleInfo:
       type: object
       required:
+        - id
         - stages
       properties:
         id:

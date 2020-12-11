@@ -3,6 +3,7 @@ package ch.heigvd.amt.gamification.api.spec.steps;
 import ch.heigvd.amt.gamification.ApiException;
 import ch.heigvd.amt.gamification.api.DefaultApi;
 import ch.heigvd.amt.gamification.api.dto.PointScale;
+import ch.heigvd.amt.gamification.api.dto.PointScaleInfo;
 import ch.heigvd.amt.gamification.api.dto.Stage;
 import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.api.spec.helpers.World;
@@ -21,7 +22,6 @@ public class PointScaleSteps {
     private Environment environment;
     private DefaultApi api;
     private World world;
-    private int id = -1;
 
     public PointScaleSteps(Environment environment, World world){
         this.environment = environment;
@@ -56,7 +56,7 @@ public class PointScaleSteps {
     @When("I send DELETE the pointscale id to the \\/pointscales\\/\\{id} endpoint$")
     public void iSendDELETEThePointscaleIdToThePointscalesIdEndpoint() {
         try {
-            environment.setLastApiResponse(api.removePointScaleWithHttpInfo(id));
+            environment.setLastApiResponse(api.removePointScaleWithHttpInfo(world.getPointScaleInfo().getId()));
             environment.processApiResponse(environment.getLastApiResponse());
         } catch (ApiException e) {
             environment.processApiException(e);
@@ -68,8 +68,8 @@ public class PointScaleSteps {
         try {
             environment.setLastApiResponse(api.getPointScalesWithHttpInfo());
             environment.processApiResponse(environment.getLastApiResponse());
-            List<PointScale> pointScales = (List<PointScale>) environment.getLastApiResponse().getData();
-            id = pointScales.size();
+            List<PointScaleInfo> pointScales = (List<PointScaleInfo>) environment.getLastApiResponse().getData();
+            world.setPointScaleInfo(pointScales.get(pointScales.size() - 1));
         } catch (ApiException e) {
             environment.processApiException(e);
         }
@@ -78,7 +78,8 @@ public class PointScaleSteps {
     @When("I send a GET to the /pointscales/\\{id} endpoint$")
     public void iSendAGETToThePointscalesIdEndpoint() {
         try {
-            environment.setLastApiResponse(api.getPointScaleWithHttpInfo(id));
+            System.out.println(world.getPointScaleInfo().getId());
+            environment.setLastApiResponse(api.getPointScaleWithHttpInfo(world.getPointScaleInfo().getId()));
             environment.processApiResponse(environment.getLastApiResponse());
             PointScale pointScale = (PointScale) environment.getLastApiResponse().getData();
             world.setLastReceivedPointScale(pointScale);
@@ -87,14 +88,15 @@ public class PointScaleSteps {
         }
     }
 
-    @Then("I have a pointscale id")
+    @Given("I have a pointscale id")
     public void iHaveAPointscaleId() {
-        assertNotEquals(id, -1);
+        assertNotEquals((int) world.getPointScaleInfo().getId(), -1);
     }
 
     @Given("I have an unknown pointscale id")
     public void iHaveAnUnknownPointscaleId() {
-        id = -1;
+        world.setPointScaleInfo(new ch.heigvd.amt.gamification.api.dto.PointScaleInfo()
+                .id(-1));
     }
 
     @And("I receive a payload that is the same as the previous pointscale payload")

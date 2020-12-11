@@ -31,4 +31,8 @@ public class World {
     Rule lastReceivedRule;
     @Getter @Setter
     PointScale LastReceivedPointScale;
+    @Getter @Setter
+    PointScaleInfo pointScaleInfo;
+    @Getter @Setter
+    RuleInfo ruleInfo;
 }
