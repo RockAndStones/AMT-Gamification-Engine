@@ -52,15 +52,17 @@ Feature: Basic operations for point scale
     Then I receive a 404 status code
 
   Scenario: get a specific point scale
+    Given I have a badge payload
+    Given I have a stage payload
     Given I have a pointscale payload
-    When I GET the pointscale payload from the /pointscales endpoint
+    When I send a GET to the /pointscales endpoint
     Then I have a pointscale id
     When I send a GET to the /pointscales/{id} endpoint
     Then I receive a 200 status code
     And I receive a payload that is the same as the previous pointscale payload
 
   Scenario: remove a point scale
-    When I GET the pointscale payload from the /pointscales endpoint
+    When I send a GET to the /pointscales endpoint
     Then I have a pointscale id
     When I send DELETE the pointscale id to the /pointscales/{id} endpoint
     Then I receive a 200 status code
