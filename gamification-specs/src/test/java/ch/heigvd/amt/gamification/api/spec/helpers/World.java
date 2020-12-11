@@ -27,4 +27,6 @@ public class World {
     Event lastReceivedEvent;
     @Getter @Setter
     Badge lastReceivedBadge;
+    @Getter @Setter
+    Rule lastReceivedRule;
 }

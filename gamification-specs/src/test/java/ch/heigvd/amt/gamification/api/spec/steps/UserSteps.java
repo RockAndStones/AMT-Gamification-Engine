@@ -39,6 +39,13 @@ public class UserSteps {
                 .badges(new ArrayList<>()));
     }
 
+    @Given("I have an unknown user")
+    public void iHaveAnUnknownUser() {
+        world.setUser(new User()
+                .userAppId("unknownUserId")
+                .badges(new ArrayList<>()));
+    }
+
     @When("I send a GET to the /users/\\{userAppId} endpoint$")
     public void iSendAGETToTheUsersUserAppIdEndpoint() {
         try {

@@ -12,3 +12,8 @@ Feature: Basic operations for applications
     Given I have an application payload
     When I GET the application payload to the /application/{name} endpoint
     Then I receive a 200 status code
+
+  Scenario: get an unknown application
+    Given I have an unknown application payload
+    When I GET the application payload to the /application/{name} endpoint
+    Then I receive a 404 status code
