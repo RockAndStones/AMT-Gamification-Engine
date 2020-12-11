@@ -35,6 +35,11 @@ public class PointScaleSteps {
                 .stages(stages));
     }
 
+    @Given("I have a pointscale payload without stages")
+    public void iHaveAPointscalePayloadWithoutStages() {
+        world.setPointScale(new ch.heigvd.amt.gamification.api.dto.PointScale());
+    }
+
     @When("I POST the pointscale payload to the /pointscales endpoint$")
     public void iPOSTThePointscalePayloadToThePointscalesEndpoint() {
         try {
