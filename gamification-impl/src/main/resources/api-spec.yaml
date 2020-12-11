@@ -614,8 +614,7 @@ components:
         userId:
           type: string
         points:
-          type: number
-          format: double
+          type: int
     Pagination:
       type: object
       required:
