@@ -23,7 +23,8 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "LEFT JOIN PointsUserEntity AS pue " +
                 "ON ue = pue.user " +
             "WHERE ue.app = :app " +
-            "GROUP BY ue.userAppId")
+            "GROUP BY ue.userAppId " +
+            "ORDER BY COALESCE(SUM(pue.points), 0) DESC")
     Page<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, Pageable p);
 
     @Query(value =
@@ -33,7 +34,8 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "LEFT JOIN PointsUserEntity AS pue " +
                 "ON ue = pue.user " +
             "WHERE ue.app = :app AND pue.pointScale = :pointScale " +
-            "GROUP BY ue.userAppId")
+            "GROUP BY ue.userAppId " +
+            "ORDER BY COALESCE(SUM(pue.points), 0) DESC")
     List<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, @Param("pointScale") PointScaleEntity pointScale);
 
     @Query(value =
@@ -44,13 +46,15 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "LEFT JOIN PointScaleEntity AS pse ON pue.pointScale = pse " +
             "LEFT JOIN RuleEntity AS re ON pse = re.pointScale " +
             "WHERE re.app = :app AND re.eventType = :eventType " +
-            "GROUP BY ue.id, ue.userAppId")
+            "GROUP BY ue.id, ue.userAppId " +
+            "ORDER BY COALESCE(SUM(pue.points), 0) DESC")
     List<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, @Param("eventType") String eventType);
 
     @Query(value =
             "SELECT " +
-                "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, ue.badges.size) " +
+                "new ch.heigvd.amt.gamification.dto.UserRankingDTO(ue.userAppId, SIZE(ue.badges)) " +
             "FROM UserEntity AS ue " +
-            "WHERE ue.app = :app")
+            "WHERE ue.app = :app " +
+            "ORDER BY SIZE(ue.badges)")
     List<UserRankingDTO> userRankingsByBadges(@Param("app") ApplicationEntity app);
 }
