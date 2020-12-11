@@ -289,7 +289,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /pointscales:
@@ -583,6 +583,17 @@ components:
       properties:
         userAppId:
           type: string
+        points:
+          type: integer
+        badges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
+    UserInfo:
+      type: object
+      properties:
+        points:
+          type: integer
         badges:
           type: array
           items:

@@ -88,7 +88,7 @@ public class PointScaleSteps {
         }
     }
 
-    @Given("I have a pointscale id")
+    @Then("I have a pointscale id")
     public void iHaveAPointscaleId() {
         assertNotEquals((int) world.getPointScaleInfo().getId(), -1);
     }

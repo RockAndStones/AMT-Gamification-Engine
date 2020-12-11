@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 public interface PointsUserRepository extends CrudRepository<PointsUserEntity, Long> {
     PointsUserEntity findPointsByUserIdAndPointScaleId(long userId, long pointScaleId);
 
-    @Query("SELECT SUM(points) FROM PointsUserEntity WHERE user=:user")
-    double sumPointsByUser(@Param("user") UserEntity u);
+    @Query(value = "SELECT SUM(pue.points) FROM PointsUserEntity AS pue WHERE pue.user=:user")
+    Double sumPointsByUser(@Param("user") UserEntity u);
+
+    void deleteAllByPointScaleId(long pointScaleId);
 }

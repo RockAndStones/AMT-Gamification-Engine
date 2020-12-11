@@ -3,9 +3,11 @@ package ch.heigvd.amt.gamification.api.endpoints;
 import ch.heigvd.amt.gamification.api.UsersApi;
 import ch.heigvd.amt.gamification.api.model.Badge;
 import ch.heigvd.amt.gamification.api.model.User;
+import ch.heigvd.amt.gamification.api.model.UserInfo;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.BadgeEntity;
 import ch.heigvd.amt.gamification.entities.UserEntity;
+import ch.heigvd.amt.gamification.repositories.PointsUserRepository;
 import ch.heigvd.amt.gamification.repositories.UserRepository;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,13 @@ public class UsersApiController implements UsersApi {
     UserRepository userRepository;
 
     @Autowired
+    PointsUserRepository pointsUserRepository;
+
+    @Autowired
     ServletRequest request;
 
     @Override
-    public ResponseEntity<User> getUser(@ApiParam(value = "", required=true) @PathVariable("userAppId") String userAppId) {
+    public ResponseEntity<UserInfo> getUser(@ApiParam(value = "", required=true) @PathVariable("userAppId") String userAppId) {
 
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
@@ -36,7 +41,7 @@ public class UsersApiController implements UsersApi {
         if (existingUserEntity == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok(toUser(existingUserEntity));
+        return ResponseEntity.ok(toUserInfo(existingUserEntity));
     }
 
     public ResponseEntity<List<User>> getUsers() {
@@ -58,6 +63,28 @@ public class UsersApiController implements UsersApi {
             badges.add(toBadge(badgeEntity));
         }
         user.setBadges(badges);
+        Double points = pointsUserRepository.sumPointsByUser(entity);
+        if(points == null){
+            user.setPoints(0);
+        } else {
+            user.setPoints(points.intValue());
+        }
+        return user;
+    }
+
+    private UserInfo toUserInfo(UserEntity entity) {
+        UserInfo user = new UserInfo();
+        List<Badge> badges = new ArrayList<>();
+        for (BadgeEntity badgeEntity : entity.getBadges()) {
+            badges.add(toBadge(badgeEntity));
+        }
+        user.setBadges(badges);
+        Double points = pointsUserRepository.sumPointsByUser(entity);
+        if(points == null){
+            user.setPoints(0);
+        } else {
+            user.setPoints(points.intValue());
+        }
         return user;
     }
 

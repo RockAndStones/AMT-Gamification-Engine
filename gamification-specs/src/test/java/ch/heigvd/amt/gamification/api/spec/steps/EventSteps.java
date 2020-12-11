@@ -34,6 +34,14 @@ public class EventSteps {
                 .eventType("type"));
     }
 
+    @Given("I have a event payload with TestEvent type")
+    public void iHaveAEventPayloadWithTestEventType() {
+        world.setEvent(new ch.heigvd.amt.gamification.api.dto.Event()
+                .userAppId(world.getUser().getUserAppId())
+                .timestamp(OffsetDateTime.now())
+                .eventType("TestEvent"));
+    }
+
     @When("^I POST the event payload to the /events endpoint$")
     public void i_POST_the_event_payload_to_the_events_endpoint() throws Throwable {
         try {

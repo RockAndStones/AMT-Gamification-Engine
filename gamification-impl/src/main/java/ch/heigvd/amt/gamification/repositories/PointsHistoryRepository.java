@@ -19,4 +19,6 @@ public interface PointsHistoryRepository extends CrudRepository<PointsHistoryEnt
             "FROM PointsHistoryEntity AS phe " +
             "WHERE phe.event.userAppId = :user AND phe.pointScale = :pointScale")
     List<PointsHistoryEntity> findAllByUserAndPointScale(String user, PointScaleEntity pointScale);
+
+    void deleteAllByPointScaleId(long pointScaleId);
 }

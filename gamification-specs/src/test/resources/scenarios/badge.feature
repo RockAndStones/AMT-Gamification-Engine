@@ -53,6 +53,8 @@ Feature: Basic operations for applications
     When I send a DELETE to the /badge/{name} endpoint
     Then I receive a 200 status code
 
+  # TODO : Delete a badge delete a rule
+
   Scenario: delete an unknown badge
     Given I have an unknown badge payload
     When I send a DELETE to the /badge/{name} endpoint
@@ -69,7 +71,7 @@ Feature: Basic operations for applications
     When I send a DELETE to the /badge/{name} endpoint
     Then I receive a 200 status code
 
-  #Scenario that lets data in the DB
+  # Scenario that lets data in the DB
   Scenario: modify a badge with existing name
     Given I have a badge payload
     When I POST the badge payload to the /badges endpoint
