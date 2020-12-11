@@ -42,7 +42,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "FROM UserEntity AS ue " +
             "LEFT JOIN PointsUserEntity AS pue ON ue = pue.user " +
             "LEFT JOIN PointScaleEntity AS pse ON pue.pointScale = pse " +
-            "LEFT JOIN RuleEntity AS re ON pse = re.pointScaleEntity " +
+            "LEFT JOIN RuleEntity AS re ON pse = re.pointScale " +
             "WHERE re.app = :app AND re.eventType = :eventType " +
             "GROUP BY ue.id, ue.userAppId")
     List<UserRankingDTO> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, @Param("eventType") String eventType);

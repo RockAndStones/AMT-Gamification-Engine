@@ -22,6 +22,9 @@ public class EventProcessor {
     @Autowired
     StageRepository stageRepository;
 
+    @Autowired
+    PointsHistoryRepository pointsHistoryRepository;
+
     public void processEvent(ApplicationEntity app, EventEntity event){
         UserEntity user = userRepository.findByUserAppIdAndAppApiKey(event.getUserAppId(), app.getApiKey());
         for(RuleEntity r : ruleRepository.findAllByAppApiKey(app.getApiKey())){
@@ -34,25 +37,32 @@ public class EventProcessor {
                     }
                 }
                 // Add the points to the right pointScale
-                PointsUserEntity pointsUserEntity = pointsUserRepository.findPointsByUserIdAndPointScaleId(user.getId(), r.getPointScaleEntity().getId());
+                PointsUserEntity pointsUserEntity = pointsUserRepository.findPointsByUserIdAndPointScaleId(user.getId(), r.getPointScale().getId());
                 if(pointsUserEntity == null){
                     pointsUserEntity = new PointsUserEntity();
                     pointsUserEntity.setPoints(0.0);
-                    pointsUserEntity.setPointScale(r.getPointScaleEntity());
+                    pointsUserEntity.setPointScale(r.getPointScale());
                     pointsUserEntity.setUser(user);
                     pointsUserRepository.save(pointsUserEntity);
                 }
+                PointsHistoryEntity pointsHistory = new PointsHistoryEntity();
+                pointsHistory.setEvent(event);
+                pointsHistory.setPointScale(r.getPointScale());
+                pointsHistory.setNbPoints(r.getPointsToAdd());
+                pointsHistoryRepository.save(pointsHistory);
+
                 double currentPoints = pointsUserEntity.getPoints() + r.getPointsToAdd();
                 pointsUserEntity.setPoints(currentPoints);
                 pointsUserRepository.save(pointsUserEntity);
                 // Add badges gained in the pointScale
-                for(StageEntity stage : stageRepository.findAllByPointScaleId(r.getPointScaleEntity().getId())){
+                for(StageEntity stage : stageRepository.findAllByPointScaleId(r.getPointScale().getId())){
                     if(stage.getPoints() <= pointsUserEntity.getPoints()){
                         if(!user.getBadges().contains(stage.getBadge()) && stage.getBadge().getUsable()) {
                             user.getBadges().add(stage.getBadge());
                         }
                     }
                 }
+                userRepository.save(user);
             }
         }
     }

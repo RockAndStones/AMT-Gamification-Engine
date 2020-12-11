@@ -35,6 +35,11 @@ public class ApplicationSteps {
         world.setObj(new InlineObject().name("MyTestApp2"));
     }
 
+    @Given("I have an unknown application payload")
+    public void iHaveAnUnknownApplicationPayload() {
+        world.setObj(new InlineObject().name("MyUnknown application"));
+    }
+
     @When("I POST the application payload to the /application endpoint$")
     public void iPOSTTheApplicationPayloadToTheApplicationEndpoint() {
         try {

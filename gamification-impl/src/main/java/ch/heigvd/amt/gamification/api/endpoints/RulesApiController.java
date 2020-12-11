@@ -1,6 +1,7 @@
 package ch.heigvd.amt.gamification.api.endpoints;
 
 import ch.heigvd.amt.gamification.api.RulesApi;
+import ch.heigvd.amt.gamification.api.model.Badge;
 import ch.heigvd.amt.gamification.api.model.Rule;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.BadgeEntity;
@@ -15,16 +16,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
-public class RuleApiController implements RulesApi {
+public class RulesApiController implements RulesApi {
 
     @Autowired
     RuleRepository ruleRepository;
@@ -64,9 +69,15 @@ public class RuleApiController implements RulesApi {
             }
         }
 
+        // If a rule has the same apikey, same event type and same point scale id we refuse the creation
+        // Because this could become a big problem and rules could become unmanageable
+        if(ruleRepository.findByPointScaleIdAndEventTypeAndAppApiKey(rule.getPointScaleId(), rule.getEventType(), app.getApiKey()) != null){
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
         RuleEntity newRuleEntity = toRuleEntity(rule);
         newRuleEntity.setApp(app);
-        newRuleEntity.setPointScaleEntity(pointScaleEntity);
+        newRuleEntity.setPointScale(pointScaleEntity);
         ruleRepository.save(newRuleEntity);
 
         URI location = ServletUriComponentsBuilder
@@ -74,6 +85,38 @@ public class RuleApiController implements RulesApi {
                 .buildAndExpand(newRuleEntity.getId()).toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @Override
+    public ResponseEntity<Void> removeRule(@ApiParam(value = "",required = true) @PathVariable("id") Integer id) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+
+        RuleEntity existingRuleEntity = ruleRepository.findByIdAndAppApiKey(id, app.getApiKey());
+        if(existingRuleEntity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        ruleRepository.delete(existingRuleEntity);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Rule> getRule(@ApiParam(value = "",required = true) @PathVariable("id") Integer id) {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+
+        RuleEntity existingRuleEntity = ruleRepository.findByIdAndAppApiKey(id, app.getApiKey());
+        if(existingRuleEntity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(toRule(existingRuleEntity));
+    }
+
+    public ResponseEntity<List<Rule>> getRules(){
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+        List<Rule> rules = new ArrayList<>();
+        for (RuleEntity ruleEntity : ruleRepository.findAllByAppApiKey(app.getApiKey())) {
+            rules.add(toRule(ruleEntity));
+        }
+        return ResponseEntity.ok(rules);
     }
 
     private RuleEntity toRuleEntity(Rule rule) {
@@ -98,6 +141,7 @@ public class RuleApiController implements RulesApi {
         rule.setPointsToAdd(entity.getPointsToAdd());
         rule.setBadgeName(entity.getBadgeName());
         rule.setPointsToAdd(entity.getPointsToAdd());
+        rule.setPointScaleId((int)entity.getPointScale().getId());
         return rule;
     }
 
