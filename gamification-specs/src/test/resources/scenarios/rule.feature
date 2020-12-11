@@ -13,6 +13,11 @@ Feature: Basic operations for rules
     When I POST the rule payload to the /rules endpoint
     Then I receive a 201 status code
 
+  Scenario: create a rule with same eventype and pointscale
+    Given I have a rule payload with same eventype and pointscale
+    When I POST the rule payload to the /rules endpoint
+    Then I receive a 409 status code
+
   Scenario: create a rule missing important information
     Given I have a rule payload with missing information
     When I POST the rule payload to the /rules endpoint
