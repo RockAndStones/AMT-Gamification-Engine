@@ -60,6 +60,16 @@ public class PointScaleSteps {
         }
     }
 
+    @When("I send a GET to the /pointscales endpoint$")
+    public void iSendAGETToThePointscalesEndpoint() {
+        try {
+            environment.setLastApiResponse(api.getPointScalesWithHttpInfo());
+            environment.processApiResponse(environment.getLastApiResponse());
+        } catch (ApiException e) {
+            environment.processApiException(e);
+        }
+    }
+
     @When("I GET the pointscale payload from the \\/pointscales endpoint$")
     public void iGETThePointscalePayloadFromThePointscalesEndpoint() {
         try {
