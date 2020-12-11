@@ -6,12 +6,15 @@ import ch.heigvd.amt.gamification.api.dto.PointScale;
 import ch.heigvd.amt.gamification.api.dto.Stage;
 import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.api.spec.helpers.World;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class PointScaleSteps {
@@ -82,8 +85,30 @@ public class PointScaleSteps {
         }
     }
 
-    @Given("I have a pointscale id")
+    @When("I send a GET to the /pointscales/\\{id} endpoint$")
+    public void iSendAGETToThePointscalesIdEndpoint() {
+        try {
+            environment.setLastApiResponse(api.getPointScaleWithHttpInfo(id));
+            environment.processApiResponse(environment.getLastApiResponse());
+            PointScale pointScale = (PointScale) environment.getLastApiResponse().getData();
+            world.setLastReceivedPointScale(pointScale);
+        } catch (ApiException e) {
+            environment.processApiException(e);
+        }
+    }
+
+    @Then("I have a pointscale id")
     public void iHaveAPointscaleId() {
         assertNotEquals(id, -1);
+    }
+
+    @Given("I have an unknown pointscale id")
+    public void iHaveAnUnknownPointscaleId() {
+        id = -1;
+    }
+
+    @And("I receive a payload that is the same as the previous pointscale payload")
+    public void iReceiveAPayloadThatIsTheSameAsThePreviousPointscalePayload() {
+        assertEquals(world.getPointScale(), world.getLastReceivedPointScale());
     }
 }
