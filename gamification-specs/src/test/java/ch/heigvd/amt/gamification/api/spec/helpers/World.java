@@ -29,4 +29,10 @@ public class World {
     Badge lastReceivedBadge;
     @Getter @Setter
     Rule lastReceivedRule;
+    @Getter @Setter
+    PointScale LastReceivedPointScale;
+    @Getter @Setter
+    PointScaleInfo pointScaleInfo;
+    @Getter @Setter
+    RuleInfo ruleInfo;
 }

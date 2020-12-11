@@ -197,7 +197,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Rule'
+                  $ref: '#/components/schemas/RuleInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     post:
@@ -301,7 +301,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PointScale'
+                  $ref: '#/components/schemas/PointScaleInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '404':
@@ -555,6 +555,31 @@ components:
           type: string
         pointScaleId:
           type: integer
+    RuleInfo:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - eventType
+        - pointsToAdd
+        - pointScaleId
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        eventType:
+          type: string
+        pointsToAdd:
+          type: number
+          format: double
+        badgeName:
+          type: string
+        pointScaleId:
+          type: integer
     User:
       type: object
       properties:
@@ -564,6 +589,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Badge'
+    PointScaleInfo:
+      type: object
+      required:
+        - id
+        - stages
+      properties:
+        id:
+          type: integer
+        stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
     PointScale:
       type: object
       required:
