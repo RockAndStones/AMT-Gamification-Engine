@@ -409,7 +409,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedBadgesRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints:
@@ -435,7 +435,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedPointsRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints/eventType/{eventType}:
@@ -454,7 +454,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedPointsRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints/pointscales/{id}:
@@ -474,7 +474,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedPointsRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '404':
@@ -582,7 +582,7 @@ components:
           format: double
         badge:
           $ref: '#/components/schemas/Badge'
-    PaginatedUserRanking:
+    PaginatedPointsRankings:
       type: object
       properties:
         pagination:
@@ -590,8 +590,25 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/UserRanking'
-    UserRanking:
+            $ref: '#/components/schemas/PointsRanking'
+    PaginatedBadgesRankings:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BadgesRanking'
+    PointsRanking:
+      type: object
+      properties:
+        userId:
+          type: string
+        points:
+          type: number
+          format: double
+    BadgesRanking:
       type: object
       properties:
         userId:
