@@ -23,12 +23,20 @@ Feature: Basic operations for event processor
     When I send a GET to the /users/{userAppId} endpoint
     Then I receive a 200 status code
     And user points are equal to 5
+
+  Scenario: obtain badge from a stage
+    Given I have a badge payload
+    Given I have a user payload
+    Given I have a event payload with TestEvent type
+    When I POST the event payload to the /events endpoint
+    Then I receive a 201 status code
+    When I send a GET to the /users/{userAppId} endpoint
+    Then I receive a 200 status code
+    And user points are equal to 10
+    And user badges are equal to the badge payload
     When I send a DELETE to the /badge/{name} endpoint
     Then I receive a 200 status code
     When I send a GET to the /pointscales endpoint
     Then I have a pointscale id
     When I send DELETE the pointscale id to the /pointscales/{id} endpoint
     Then I receive a 200 status code
-
-
-  Scenario: obtain badge from a stage

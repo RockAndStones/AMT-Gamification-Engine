@@ -122,6 +122,7 @@ public class BadgesApiController implements BadgesApi {
         if(existingBadgeEntity == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        // TODO : Remove rule linked to badge
         stageRepository.deleteByBadgeId(existingBadgeEntity.getId());
         badgeRepository.delete(existingBadgeEntity);
         return ResponseEntity.ok().build();

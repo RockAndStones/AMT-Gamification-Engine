@@ -61,9 +61,9 @@ public class RulesApiController implements RulesApi {
         if(pointScaleEntity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
+        BadgeEntity badgeEntity = null;
         if(rule.getBadgeName() != null) {
-            BadgeEntity badgeEntity = badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey());
+            badgeEntity = badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey());
             if (badgeEntity == null ||
                 !badgeEntity.getUsable()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -80,6 +80,9 @@ public class RulesApiController implements RulesApi {
         newRuleEntity.setApp(app);
         newRuleEntity.setPointScale(pointScaleEntity);
         ruleRepository.save(newRuleEntity);
+        if(badgeEntity != null){
+            newRuleEntity.setBadge(badgeEntity);
+        }
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
@@ -126,11 +129,6 @@ public class RulesApiController implements RulesApi {
         entity.setDescription(rule.getDescription());
         entity.setEventType(rule.getEventType());
         entity.setPointsToAdd(rule.getPointsToAdd());
-        if (rule.getBadgeName() != null){
-            entity.setBadgeName(rule.getBadgeName());
-        } else {
-            entity.setBadgeName("");
-        }
         return entity;
     }
 
@@ -140,7 +138,11 @@ public class RulesApiController implements RulesApi {
         rule.setDescription(entity.getDescription());
         rule.setEventType(entity.getEventType());
         rule.setPointsToAdd(entity.getPointsToAdd());
-        rule.setBadgeName(entity.getBadgeName());
+        if(entity.getBadge() != null) {
+            rule.setBadgeName(entity.getBadge().getName());
+        } else {
+            rule.setBadgeName("");
+        }
         rule.setPointsToAdd(entity.getPointsToAdd());
         rule.setPointScaleId((int)entity.getPointScale().getId());
         return rule;
@@ -153,7 +155,11 @@ public class RulesApiController implements RulesApi {
         rule.setDescription(entity.getDescription());
         rule.setEventType(entity.getEventType());
         rule.setPointsToAdd(entity.getPointsToAdd());
-        rule.setBadgeName(entity.getBadgeName());
+        if(entity.getBadge() != null) {
+            rule.setBadgeName(entity.getBadge().getName());
+        } else {
+            rule.setBadgeName("");
+        }
         rule.setPointsToAdd(entity.getPointsToAdd());
         rule.setPointScaleId((int)entity.getPointScale().getId());
         return rule;

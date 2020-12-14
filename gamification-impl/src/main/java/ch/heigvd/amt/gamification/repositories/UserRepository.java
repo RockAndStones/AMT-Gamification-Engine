@@ -53,4 +53,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "FROM UserEntity AS ue " +
             "WHERE ue.app = :app")
     List<UserRankingDTO> userRankingsByBadges(@Param("app") ApplicationEntity app);
+
+    void deleteAllByBadges_id(long id);
 }

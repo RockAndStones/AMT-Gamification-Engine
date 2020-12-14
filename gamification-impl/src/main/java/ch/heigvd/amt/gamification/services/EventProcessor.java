@@ -30,10 +30,10 @@ public class EventProcessor {
         for(RuleEntity r : ruleRepository.findAllByAppApiKey(app.getApiKey())){
             if (r.getEventType().equals(event.getEventType())){
                 // Verify that a badge is won
-                if (!r.getBadgeName().isEmpty()) {
-                    BadgeEntity badge = badgeRepository.findByNameAndAppApiKey(r.getBadgeName(), app.getApiKey());
+                if (r.getBadge() != null) {
+                    BadgeEntity badge = badgeRepository.findByNameAndAppApiKey(r.getBadge().getName(), app.getApiKey());
                     if (!user.getBadges().contains(badge)) {
-                        user.getBadges().add(badgeRepository.findByNameAndAppApiKey(r.getBadgeName(), app.getApiKey()));
+                        user.getBadges().add(badgeRepository.findByNameAndAppApiKey(r.getBadge().getName(), app.getApiKey()));
                     }
                 }
                 // Add the points to the right pointScale

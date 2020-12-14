@@ -88,4 +88,10 @@ public class UserSteps {
         assert world.getUserInfo().getPoints() != null;
         assertEquals(points, world.getUserInfo().getPoints().intValue());
     }
+
+    @And("user badges are equal to the badge payload")
+    public void userBadgesAreEqualToTheBadgePayload() {
+        assert world.getUserInfo().getBadges() != null;
+        assertEquals(world.getBadge(), world.getUserInfo().getBadges().get(0));
+    }
 }
