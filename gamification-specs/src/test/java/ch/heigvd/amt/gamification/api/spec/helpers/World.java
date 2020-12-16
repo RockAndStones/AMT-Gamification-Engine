@@ -37,4 +37,6 @@ public class World {
     RuleInfo ruleInfo;
     @Getter @Setter
     UserInfo userInfo;
+    @Getter @Setter
+    EventInfo eventInfo;
 }

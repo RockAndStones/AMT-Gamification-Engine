@@ -14,6 +14,8 @@ Feature: Basic operations for applications
 
   Scenario: get specific event
     Given I have a event payload
+    When I POST the event payload to the /events endpoint
+    Then I receive a 201 status code
     When I send a GET to the /events endpoint
     Then I receive a 200 status code
     Then I have an event id

@@ -129,7 +129,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Event'
+                  $ref: '#/components/schemas/EventInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /events/{id}:
@@ -517,6 +517,18 @@ components:
           type: string
         eventProperties:
           type: object
+    EventInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        userAppId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        eventType:
+          type: string
     Badge:
       type: object
       properties:

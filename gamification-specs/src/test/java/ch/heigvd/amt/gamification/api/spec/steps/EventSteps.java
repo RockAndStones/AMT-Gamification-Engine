@@ -3,6 +3,7 @@ package ch.heigvd.amt.gamification.api.spec.steps;
 import ch.heigvd.amt.gamification.ApiException;
 import ch.heigvd.amt.gamification.api.DefaultApi;
 import ch.heigvd.amt.gamification.api.dto.Event;
+import ch.heigvd.amt.gamification.api.dto.EventInfo;
 import ch.heigvd.amt.gamification.api.dto.UserInfo;
 import ch.heigvd.amt.gamification.api.spec.helpers.Environment;
 import ch.heigvd.amt.gamification.api.spec.helpers.World;
@@ -15,14 +16,12 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class EventSteps {
     private Environment environment;
     private DefaultApi api;
     private World world;
-    private int id = -1;
 
     public EventSteps(Environment environment, World world){
         this.environment = environment;
@@ -62,8 +61,8 @@ public class EventSteps {
         try {
             environment.setLastApiResponse(api.getEventsWithHttpInfo());
             environment.processApiResponse(environment.getLastApiResponse());
-            List<Event> events = (ArrayList<Event>) environment.getLastApiResponse().getData();
-            id = events.size();
+            List<EventInfo> events = (ArrayList<EventInfo>) environment.getLastApiResponse().getData();
+            world.setEventInfo(events.get(events.size() - 1));
         } catch (ApiException e) {
             environment.processApiException(e);
         }
@@ -88,7 +87,7 @@ public class EventSteps {
     @When("I send a GET to the /events/\\{id} endpoint$")
     public void iSendAGETToTheEventsIdEndpoint() {
         try {
-            environment.setLastApiResponse(api.getEventWithHttpInfo(id));
+            environment.setLastApiResponse(api.getEventWithHttpInfo(world.getEventInfo().getId()));
             environment.processApiResponse(environment.getLastApiResponse());
             world.setLastReceivedEvent((Event)environment.getLastApiResponse().getData());
         } catch (ApiException e) {
@@ -103,11 +102,12 @@ public class EventSteps {
 
     @Then("I have an event id")
     public void iHaveAnEventId() {
-        assertNotEquals(-1, id);
+        assertNotNull(world.getEventInfo().getId());
     }
 
     @Given("I have an unknown event id")
     public void iHaveAnUnkownEventId() {
-        id = -1;
+        world.setEventInfo(new ch.heigvd.amt.gamification.api.dto.EventInfo()
+                .id(-1));
     }
 }
