@@ -34,12 +34,12 @@ public class EventSteps {
                 .eventType("type"));
     }
 
-    @Given("I have a event payload with TestEvent type")
-    public void iHaveAEventPayloadWithTestEventType() {
+    @Given("I have a event payload with {string} type")
+    public void iHaveAEventPayloadWithTestEventType(String eventType) {
         world.setEvent(new ch.heigvd.amt.gamification.api.dto.Event()
                 .userAppId(world.getUser().getUserAppId())
                 .timestamp(OffsetDateTime.now())
-                .eventType("TestEvent"));
+                .eventType(eventType));
     }
 
     @When("^I POST the event payload to the /events endpoint$")

@@ -79,10 +79,10 @@ public class RulesApiController implements RulesApi {
         RuleEntity newRuleEntity = toRuleEntity(rule);
         newRuleEntity.setApp(app);
         newRuleEntity.setPointScale(pointScaleEntity);
-        ruleRepository.save(newRuleEntity);
         if(badgeEntity != null){
             newRuleEntity.setBadge(badgeEntity);
         }
+        ruleRepository.save(newRuleEntity);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")

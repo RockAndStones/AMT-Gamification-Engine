@@ -17,23 +17,45 @@ Feature: Basic operations for event processor
     Then I POST the rule payload to the /rules endpoint
     Then I receive a 201 status code
     Given I have a user payload
-    Given I have a event payload with TestEvent type
+    Given I have a event payload with "TestEvent" type
     When I POST the event payload to the /events endpoint
     Then I receive a 201 status code
     When I send a GET to the /users/{userAppId} endpoint
     Then I receive a 200 status code
     And user points are equal to 5
 
+  Scenario: obtain badge from a rule
+    Given I have a badge payload
+    Given I have a user payload
+    When I send a GET to the /pointscales endpoint
+    Then I have a pointscale id
+    Given I have a rule payload that add 0 points and a badge
+    Then I POST the rule payload to the /rules endpoint
+    Then I receive a 201 status code
+    Given I have a event payload with "EventForABeautifulBadge" type
+    When I POST the event payload to the /events endpoint
+    Then I receive a 201 status code
+    When I send a GET to the /users/{userAppId} endpoint
+    Then I receive a 200 status code
+    # Points are kept from the last scenario and the rule does not add new points
+    And user points are equal to 5
+    And user badges last badge is equal to the badge payload
+    When I GET the rule payload from the /rules endpoint
+    Then I have a rule id
+    When I send DELETE the rule id to the /rules/{id} endpoint
+    Then I receive a 200 status code
+
+
   Scenario: obtain badge from a stage
     Given I have a badge payload
     Given I have a user payload
-    Given I have a event payload with TestEvent type
+    Given I have a event payload with "TestEvent" type
     When I POST the event payload to the /events endpoint
     Then I receive a 201 status code
     When I send a GET to the /users/{userAppId} endpoint
     Then I receive a 200 status code
     And user points are equal to 10
-    And user badges are equal to the badge payload
+    And user badges last badge is equal to the badge payload
     When I send a DELETE to the /badge/{name} endpoint
     Then I receive a 200 status code
     When I send a GET to the /pointscales endpoint

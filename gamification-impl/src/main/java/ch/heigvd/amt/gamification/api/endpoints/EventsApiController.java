@@ -50,16 +50,12 @@ public class EventsApiController implements EventsApi {
 
         // Create the user if not present in the repository
         UserEntity userEntity = userRepository.findByUserAppIdAndAppApiKey(event.getUserAppId(), app.getApiKey());
-        System.out.println(userEntity);
         if (userEntity == null) {
             userEntity = new UserEntity();
             userEntity.setUserAppId(event.getUserAppId());
             userEntity.setBadges(new ArrayList<>());
             userEntity.setApp(app);
-            System.out.println(userEntity);
-            System.out.println(userRepository.count());
             userRepository.save(userEntity);
-            System.out.println(userRepository.count());
         }
 
         // Create and save the event entity
