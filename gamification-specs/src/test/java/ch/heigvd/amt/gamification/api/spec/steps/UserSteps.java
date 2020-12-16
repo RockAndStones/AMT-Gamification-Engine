@@ -94,4 +94,10 @@ public class UserSteps {
         assert world.getUserInfo().getBadges() != null;
         assertEquals(world.getBadge(), world.getUserInfo().getBadges().get(world.getUserInfo().getBadges().size() - 1));
     }
+
+    @And("user badges is empty")
+    public void userBadgesIsEmpty() {
+        assert world.getUserInfo().getBadges() != null;
+        assertEquals(0, world.getUserInfo().getBadges().size());
+    }
 }

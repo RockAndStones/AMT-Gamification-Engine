@@ -5,6 +5,7 @@ import ch.heigvd.amt.gamification.api.model.Badge;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.BadgeEntity;
 import ch.heigvd.amt.gamification.repositories.BadgeRepository;
+import ch.heigvd.amt.gamification.repositories.RuleRepository;
 import ch.heigvd.amt.gamification.repositories.StageRepository;
 import ch.heigvd.amt.gamification.repositories.UserRepository;
 import io.swagger.annotations.ApiParam;
@@ -34,6 +35,9 @@ public class BadgesApiController implements BadgesApi {
 
     @Autowired
     StageRepository stageRepository;
+
+    @Autowired
+    RuleRepository ruleRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -122,7 +126,7 @@ public class BadgesApiController implements BadgesApi {
         if(existingBadgeEntity == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        // TODO : Remove rule linked to badge
+        ruleRepository.deleteByBadgeId(existingBadgeEntity.getId());
         stageRepository.deleteByBadgeId(existingBadgeEntity.getId());
         badgeRepository.delete(existingBadgeEntity);
         return ResponseEntity.ok().build();

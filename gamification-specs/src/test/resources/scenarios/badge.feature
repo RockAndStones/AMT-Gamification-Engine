@@ -53,7 +53,7 @@ Feature: Basic operations for applications
     When I send a DELETE to the /badge/{name} endpoint
     Then I receive a 200 status code
 
-  # TODO : Delete a badge delete a rule
+  #Scenario: deleting a badge will delete stages and rules related to him
 
   Scenario: delete an unknown badge
     Given I have an unknown badge payload

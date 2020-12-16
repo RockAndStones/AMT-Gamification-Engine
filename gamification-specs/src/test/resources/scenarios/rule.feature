@@ -36,12 +36,22 @@ Feature: Basic operations for rules
     When I POST the rule payload to the /rules endpoint
     Then I receive a 404 status code
 
-  # TODO : Test for disabled badges
-
   Scenario: create a rule with an unknown pointscale
     Given I have a rule payload with an unknown pointscale
     When I POST the rule payload to the /rules endpoint
     Then I receive a 404 status code
+
+  Scenario: create a rule with disabled badge (unusable)
+    Given I have a badge payload
+    When I send a PUT to the /badge/{name} endpoint with usable at false
+    Then I receive a 200 status code
+    When I send a GET to the /pointscales endpoint
+    Then I have a pointscale id
+    Given I have a rule payload that add 0 points and a badge
+    When I POST the rule payload to the /rules endpoint
+    Then I receive a 404 status code
+    When I send a PUT to the /badge/{name} endpoint with usable at true
+    Then I receive a 200 status code
 
   Scenario: get the list of rules
     When I send a GET to the /rules endpoint
