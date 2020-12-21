@@ -103,4 +103,9 @@ public class PointScaleSteps {
     public void iReceiveAPayloadThatIsTheSameAsThePreviousPointscalePayload() {
         assertEquals(world.getPointScale(), world.getLastReceivedPointScale());
     }
+
+    @Then("stages are empty")
+    public void stagesAreEmpty() {
+        assertEquals(0, world.getLastReceivedPointScale().getStages().size());
+    }
 }
