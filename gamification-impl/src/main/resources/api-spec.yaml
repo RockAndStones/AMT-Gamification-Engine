@@ -160,10 +160,7 @@ paths:
         content:
           'application/json':
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/NewApplication'
       responses:
         '201':
           description: New application created
@@ -409,7 +406,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedBadgesRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints:
@@ -435,7 +432,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedPointsRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints/eventType/{eventType}:
@@ -454,7 +451,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedPointsRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints/pointscales/{id}:
@@ -474,7 +471,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedPointsRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '404':
@@ -535,6 +532,11 @@ components:
         name:
           type: string
         description:
+          type: string
+    NewApplication:
+      type: object
+      properties:
+        name:
           type: string
     Application:
       type: object
@@ -642,7 +644,7 @@ components:
           format: double
         badge:
           $ref: '#/components/schemas/Badge'
-    PaginatedUserRanking:
+    PaginatedPointsRankings:
       type: object
       properties:
         pagination:
@@ -650,8 +652,17 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/UserRanking'
-    UserRanking:
+            $ref: '#/components/schemas/PointsRanking'
+    PaginatedBadgesRankings:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BadgesRanking'
+    PointsRanking:
       type: object
       properties:
         userId:
@@ -659,6 +670,13 @@ components:
         points:
           type: number
           format: double
+    BadgesRanking:
+      type: object
+      properties:
+        userId:
+          type: string
+        points:
+          type: int
     Pagination:
       type: object
       required:
