@@ -58,4 +58,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "WHERE ue.app = :app " +
             "ORDER BY SIZE(ue.badges)")
     List<BadgesRanking> userRankingsByBadges(@Param("app") ApplicationEntity app);
+
+    void deleteAllByBadges_id(long id);
 }

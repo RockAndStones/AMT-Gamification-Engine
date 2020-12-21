@@ -35,4 +35,8 @@ public class World {
     PointScaleInfo pointScaleInfo;
     @Getter @Setter
     RuleInfo ruleInfo;
+    @Getter @Setter
+    UserInfo userInfo;
+    @Getter @Setter
+    EventInfo eventInfo;
 }

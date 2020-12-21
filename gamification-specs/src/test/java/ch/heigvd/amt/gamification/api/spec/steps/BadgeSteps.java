@@ -128,8 +128,21 @@ public class BadgeSteps {
         }
     }
 
+    @When("I send a PUT to the /badge/\\{name} endpoint with usable at true$")
+    public void iSendAPUTToTheBadgeNameEndpointWithUsableAtTrue() {
+        try {
+            environment.setLastApiResponse(api.putBadgeWithHttpInfo(world.getBadge().getName(), true, world.getBadge()));
+            environment.processApiResponse(environment.getLastApiResponse());
+            world.setLastReceivedBadge((Badge) environment.getLastApiResponse().getData());
+        } catch (ApiException e) {
+            environment.processApiException(e);
+        }
+    }
+
     @And("I receive a payload that is the same as the last badge payload")
     public void iReceiveAPayloadThatIsTheSameAsTheCreatedBadgePayload() {
         assertEquals(world.getBadge(), world.getLastReceivedBadge());
     }
+
+
 }

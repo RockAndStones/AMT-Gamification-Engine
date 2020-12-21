@@ -78,6 +78,27 @@ public class RuleSteps {
                 .pointsToAdd(20.0));
     }
 
+    @Given("I have a rule payload that add {int} points")
+    public void iHaveARulePayloadThatAddPoints(int points) {
+        world.setRule(new ch.heigvd.amt.gamification.api.dto.Rule()
+                .name("MyTestRuleWith5Points")
+                .description("This is the rule for a test that add five points")
+                .eventType("TestEvent")
+                .pointScaleId(world.getPointScaleInfo().getId())
+                .pointsToAdd((double) points));
+    }
+
+    @Given("I have a rule payload that add {int} points and a badge")
+    public void iHaveARulePayloadThatAddPointsAndABadge(int points) {
+        world.setRule(new ch.heigvd.amt.gamification.api.dto.Rule()
+                .name("MyTestRuleWith5PointsAndABadge")
+                .description("This is the rule for a test that add five points and a beautiful badge")
+                .eventType("EventForABeautifulBadge")
+                .badgeName("MyTestBadge")
+                .pointScaleId(world.getPointScaleInfo().getId())
+                .pointsToAdd((double) points));
+    }
+
     @Then("I have a rule id")
     public void iHaveARuleId() {
         assertNotEquals((int) world.getRuleInfo().getId(), -1);

@@ -10,7 +10,7 @@ Feature: Basic operations for rules
     When I POST the pointscale payload to the /pointscales endpoint
     Then I receive a 201 status code
     When I send a GET to the /pointscales endpoint
-    Given I have a pointscale id
+    Then I have a pointscale id
     When I send a GET to the /pointscales/{id} endpoint
     Then I receive a 200 status code
     Given I have a rule payload
@@ -19,7 +19,7 @@ Feature: Basic operations for rules
 
   Scenario: create a rule with same eventype and pointscale
     When I send a GET to the /pointscales endpoint
-    Given I have a pointscale id
+    Then I have a pointscale id
     Given I have a rule payload with same eventype and pointscale
     When I POST the rule payload to the /rules endpoint
     Then I receive a 409 status code
@@ -31,17 +31,27 @@ Feature: Basic operations for rules
 
   Scenario: create a rule with an unknown badge
     When I send a GET to the /pointscales endpoint
-    Given I have a pointscale id
+    Then I have a pointscale id
     Given I have a rule payload with unknown badge
     When I POST the rule payload to the /rules endpoint
     Then I receive a 404 status code
-
-  # TODO : Test for disabled badges
 
   Scenario: create a rule with an unknown pointscale
     Given I have a rule payload with an unknown pointscale
     When I POST the rule payload to the /rules endpoint
     Then I receive a 404 status code
+
+  Scenario: create a rule with disabled badge (unusable)
+    Given I have a badge payload
+    When I send a PUT to the /badge/{name} endpoint with usable at false
+    Then I receive a 200 status code
+    When I send a GET to the /pointscales endpoint
+    Then I have a pointscale id
+    Given I have a rule payload that add 0 points and a badge
+    When I POST the rule payload to the /rules endpoint
+    Then I receive a 404 status code
+    When I send a PUT to the /badge/{name} endpoint with usable at true
+    Then I receive a 200 status code
 
   Scenario: get the list of rules
     When I send a GET to the /rules endpoint
@@ -49,7 +59,7 @@ Feature: Basic operations for rules
 
   Scenario: get a specific rule with an id
     When I send a GET to the /pointscales endpoint
-    Given I have a pointscale id
+    Then I have a pointscale id
     Given I have a rule payload
     When I GET the rule payload from the /rules endpoint
     Then I have a rule id
@@ -59,7 +69,7 @@ Feature: Basic operations for rules
 
   Scenario: get a specific rule with an unknown id
     When I send a GET to the /pointscales endpoint
-    Given I have a pointscale id
+    Then I have a pointscale id
     Given I have an unknown rule id
     When I send a GET to the /rules/{id} endpoint
     Then I receive a 404 status code

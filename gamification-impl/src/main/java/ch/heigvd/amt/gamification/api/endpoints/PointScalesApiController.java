@@ -29,6 +29,12 @@ public class PointScalesApiController implements PointscalesApi {
     PointScaleRepository pointScaleRepository;
 
     @Autowired
+    PointsUserRepository pointsUserRepository;
+
+    @Autowired
+    PointsHistoryRepository pointsHistoryRepository;
+
+    @Autowired
     StageRepository stageRepository;
 
     @Autowired
@@ -111,6 +117,8 @@ public class PointScalesApiController implements PointscalesApi {
         if(existingPointScaleEntity == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        pointsUserRepository.deleteAllByPointScaleId(existingPointScaleEntity.getId());
+        pointsHistoryRepository.deleteAllByPointScaleId(existingPointScaleEntity.getId());
         stageRepository.deleteAllByPointScaleId(existingPointScaleEntity.getId());
         ruleRepository.deleteAllByPointScaleId(existingPointScaleEntity.getId());
         pointScaleRepository.delete(existingPointScaleEntity);

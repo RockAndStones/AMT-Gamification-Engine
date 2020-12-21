@@ -88,7 +88,7 @@ public class PointScaleSteps {
         }
     }
 
-    @Given("I have a pointscale id")
+    @Then("I have a pointscale id")
     public void iHaveAPointscaleId() {
         assertNotEquals((int) world.getPointScaleInfo().getId(), -1);
     }
@@ -102,5 +102,10 @@ public class PointScaleSteps {
     @And("I receive a payload that is the same as the previous pointscale payload")
     public void iReceiveAPayloadThatIsTheSameAsThePreviousPointscalePayload() {
         assertEquals(world.getPointScale(), world.getLastReceivedPointScale());
+    }
+
+    @Then("stages are empty")
+    public void stagesAreEmpty() {
+        assertEquals(0, world.getLastReceivedPointScale().getStages().size());
     }
 }

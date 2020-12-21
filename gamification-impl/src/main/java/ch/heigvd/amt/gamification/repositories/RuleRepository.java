@@ -8,4 +8,5 @@ public interface RuleRepository extends CrudRepository<RuleEntity, Long> {
     RuleEntity findByIdAndAppApiKey(long id, String apiKey);
     RuleEntity findByPointScaleIdAndEventTypeAndAppApiKey(long id, String eventType, String apiKey);
     void deleteAllByPointScaleId(long pointScaleId);
+    void deleteByBadgeId(long badgeId);
 }

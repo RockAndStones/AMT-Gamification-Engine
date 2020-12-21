@@ -66,5 +66,4 @@ Feature: Basic operations for point scale
     Then I have a pointscale id
     When I send DELETE the pointscale id to the /pointscales/{id} endpoint
     Then I receive a 200 status code
-
-  #TODO delete badge
+    # Remove the stages and the rules realted to the pointscale
