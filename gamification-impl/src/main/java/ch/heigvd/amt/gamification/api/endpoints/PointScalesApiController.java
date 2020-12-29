@@ -50,7 +50,7 @@ public class PointScalesApiController implements PointscalesApi {
     ServletRequest request;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createPointScale(@ApiParam(value = "" ,required=true )  @Valid @RequestBody PointScale pointScale) {
+    public ResponseEntity<PointScaleInfo> createPointScale(@ApiParam(value = "" ,required=true )  @Valid @RequestBody PointScale pointScale) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         if(pointScale.getStages() == null || pointScale.getStages().size() <= 0){
@@ -62,7 +62,7 @@ public class PointScalesApiController implements PointscalesApi {
             if(stage.getPoints() < 0){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             } else if(stage.getBadge() == null || badge == null
-            || !badge.getUsable()) {
+                    || !badge.getUsable()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         }
@@ -78,7 +78,6 @@ public class PointScalesApiController implements PointscalesApi {
             stageRepository.save(newStageEntity);
         }
 
-        //TODO Que faut-il retourner ??
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newPointScaleEntity.getId()).toUri();
@@ -176,3 +175,4 @@ public class PointScalesApiController implements PointscalesApi {
         return stageEntity;
     }
 }
+
