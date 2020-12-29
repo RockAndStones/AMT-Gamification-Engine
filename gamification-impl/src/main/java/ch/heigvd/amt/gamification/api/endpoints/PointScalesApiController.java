@@ -50,7 +50,7 @@ public class PointScalesApiController implements PointscalesApi {
     ServletRequest request;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PointScaleInfo> createPointScale(@ApiParam(value = "" ,required=true )  @Valid @RequestBody PointScale pointScale) {
+    public ResponseEntity<Void> createPointScale(@ApiParam(value = "" ,required=true )  @Valid @RequestBody PointScale pointScale) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         if(pointScale.getStages() == null || pointScale.getStages().size() <= 0){
