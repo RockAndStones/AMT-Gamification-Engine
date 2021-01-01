@@ -400,6 +400,19 @@ paths:
     get:
       description: get the user rankings by total number of badges
       operationId: getRankingsByTotalBadges
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
       responses:
         '200':
           description: success
@@ -445,6 +458,18 @@ paths:
           schema:
             type: string
           required: true
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
       responses:
         '200':
           description: success
@@ -465,6 +490,18 @@ paths:
             type: integer
             format: int64
           required: true
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
       responses:
         '200':
           description: success
