@@ -1,5 +1,6 @@
 package ch.heigvd.amt.gamification.api.endpoints;
 
+import ch.heigvd.amt.gamification.api.model.EventInfo;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.EventEntity;
 import ch.heigvd.amt.gamification.entities.UserEntity;
@@ -50,16 +51,12 @@ public class EventsApiController implements EventsApi {
 
         // Create the user if not present in the repository
         UserEntity userEntity = userRepository.findByUserAppIdAndAppApiKey(event.getUserAppId(), app.getApiKey());
-        System.out.println(userEntity);
         if (userEntity == null) {
             userEntity = new UserEntity();
             userEntity.setUserAppId(event.getUserAppId());
             userEntity.setBadges(new ArrayList<>());
             userEntity.setApp(app);
-            System.out.println(userEntity);
-            System.out.println(userRepository.count());
             userRepository.save(userEntity);
-            System.out.println(userRepository.count());
         }
 
         // Create and save the event entity
@@ -77,15 +74,15 @@ public class EventsApiController implements EventsApi {
         return ResponseEntity.created(location).build();
     }
 
-    public ResponseEntity<List<Event>> getEvents() {
+    public ResponseEntity<List<EventInfo>> getEvents() {
 
         // Get application entity
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         // Get and return the list of events
-        List<Event> events = new LinkedList<>();
+        List<EventInfo> events = new LinkedList<>();
         for (EventEntity eventEntity : eventRepository.findAllByApp(app)) {
-            events.add(toEvent(eventEntity));
+            events.add(toEventInfo(eventEntity));
         }
         return ResponseEntity.ok(events);
 
@@ -117,6 +114,15 @@ public class EventsApiController implements EventsApi {
         event.setTimestamp(entity.getTimestamp());
         event.setEventType(entity.getEventType());
 //        event.setEventProperties(entity.getEventProperties());
+        return event;
+    }
+
+    private EventInfo toEventInfo(EventEntity entity) {
+        EventInfo event = new EventInfo();
+        event.setUserAppId(entity.getUserAppId());
+        event.setTimestamp(entity.getTimestamp());
+        event.setEventType(entity.getEventType());
+        event.setId((int)entity.getId());
         return event;
     }
 

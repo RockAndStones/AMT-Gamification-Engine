@@ -16,7 +16,7 @@ public class World {
     @Getter @Setter
     static Application app;
     @Getter @Setter
-    InlineObject obj;
+    NewApplication newApp;
     @Getter @Setter
     PointScale pointScale;
     @Getter @Setter
@@ -29,4 +29,18 @@ public class World {
     Badge lastReceivedBadge;
     @Getter @Setter
     Rule lastReceivedRule;
+    @Getter @Setter
+    PointScale LastReceivedPointScale;
+    @Getter @Setter
+    PointScaleInfo pointScaleInfo;
+    @Getter @Setter
+    RuleInfo ruleInfo;
+    @Getter @Setter
+    UserInfo userInfo;
+    @Getter @Setter
+    EventInfo eventInfo;
+    @Getter @Setter
+    PaginatedPointsRankings pointsRankings;
+    @Getter @Setter
+    PaginatedBadgesRankings badgesRankings;
 }

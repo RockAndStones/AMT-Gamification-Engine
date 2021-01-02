@@ -129,7 +129,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Event'
+                  $ref: '#/components/schemas/EventInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /events/{id}:
@@ -160,10 +160,7 @@ paths:
         content:
           'application/json':
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/NewApplication'
       responses:
         '201':
           description: New application created
@@ -200,7 +197,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Rule'
+                  $ref: '#/components/schemas/RuleInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     post:
@@ -289,7 +286,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /pointscales:
@@ -304,7 +301,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PointScale'
+                  $ref: '#/components/schemas/PointScaleInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '404':
@@ -403,13 +400,26 @@ paths:
     get:
       description: get the user rankings by total number of badges
       operationId: getRankingsByTotalBadges
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
       responses:
         '200':
           description: success
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedBadgesRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints:
@@ -435,7 +445,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedPointsRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints/eventType/{eventType}:
@@ -448,13 +458,25 @@ paths:
           schema:
             type: string
           required: true
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
       responses:
         '200':
           description: success
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedPointsRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /rankings/byPoints/pointscales/{id}:
@@ -468,13 +490,25 @@ paths:
             type: integer
             format: int64
           required: true
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
       responses:
         '200':
           description: success
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PaginatedUserRanking'
+                $ref: '#/components/schemas/PaginatedPointsRankings'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '404':
@@ -517,12 +551,29 @@ components:
           type: string
         eventProperties:
           type: object
+    EventInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        userAppId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        eventType:
+          type: string
     Badge:
       type: object
       properties:
         name:
           type: string
         description:
+          type: string
+    NewApplication:
+      type: object
+      properties:
+        name:
           type: string
     Application:
       type: object
@@ -553,15 +604,63 @@ components:
           type: string
         pointScaleId:
           type: integer
+    RuleInfo:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - eventType
+        - pointsToAdd
+        - pointScaleId
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        eventType:
+          type: string
+        pointsToAdd:
+          type: number
+          format: double
+        badgeName:
+          type: string
+        pointScaleId:
+          type: integer
     User:
       type: object
       properties:
         userAppId:
           type: string
+        points:
+          type: integer
         badges:
           type: array
           items:
             $ref: '#/components/schemas/Badge'
+    UserInfo:
+      type: object
+      properties:
+        points:
+          type: integer
+        badges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Badge'
+    PointScaleInfo:
+      type: object
+      required:
+        - id
+        - stages
+      properties:
+        id:
+          type: integer
+        stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
     PointScale:
       type: object
       required:
@@ -582,7 +681,7 @@ components:
           format: double
         badge:
           $ref: '#/components/schemas/Badge'
-    PaginatedUserRanking:
+    PaginatedPointsRankings:
       type: object
       properties:
         pagination:
@@ -590,8 +689,17 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/UserRanking'
-    UserRanking:
+            $ref: '#/components/schemas/PointsRanking'
+    PaginatedBadgesRankings:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BadgesRanking'
+    PointsRanking:
       type: object
       properties:
         userId:
@@ -599,6 +707,13 @@ components:
         points:
           type: number
           format: double
+    BadgesRanking:
+      type: object
+      properties:
+        userId:
+          type: string
+        points:
+          type: int
     Pagination:
       type: object
       required:

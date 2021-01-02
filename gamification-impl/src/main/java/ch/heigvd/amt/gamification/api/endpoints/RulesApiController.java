@@ -3,6 +3,7 @@ package ch.heigvd.amt.gamification.api.endpoints;
 import ch.heigvd.amt.gamification.api.RulesApi;
 import ch.heigvd.amt.gamification.api.model.Badge;
 import ch.heigvd.amt.gamification.api.model.Rule;
+import ch.heigvd.amt.gamification.api.model.RuleInfo;
 import ch.heigvd.amt.gamification.entities.ApplicationEntity;
 import ch.heigvd.amt.gamification.entities.BadgeEntity;
 import ch.heigvd.amt.gamification.entities.PointScaleEntity;
@@ -60,9 +61,9 @@ public class RulesApiController implements RulesApi {
         if(pointScaleEntity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
+        BadgeEntity badgeEntity = null;
         if(rule.getBadgeName() != null) {
-            BadgeEntity badgeEntity = badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey());
+            badgeEntity = badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey());
             if (badgeEntity == null ||
                 !badgeEntity.getUsable()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -78,6 +79,9 @@ public class RulesApiController implements RulesApi {
         RuleEntity newRuleEntity = toRuleEntity(rule);
         newRuleEntity.setApp(app);
         newRuleEntity.setPointScale(pointScaleEntity);
+        if(badgeEntity != null){
+            newRuleEntity.setBadge(badgeEntity);
+        }
         ruleRepository.save(newRuleEntity);
 
         URI location = ServletUriComponentsBuilder
@@ -110,11 +114,11 @@ public class RulesApiController implements RulesApi {
         return ResponseEntity.ok(toRule(existingRuleEntity));
     }
 
-    public ResponseEntity<List<Rule>> getRules(){
+    public ResponseEntity<List<RuleInfo>> getRules(){
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-        List<Rule> rules = new ArrayList<>();
+        List<RuleInfo> rules = new ArrayList<>();
         for (RuleEntity ruleEntity : ruleRepository.findAllByAppApiKey(app.getApiKey())) {
-            rules.add(toRule(ruleEntity));
+            rules.add(toRuleInfo(ruleEntity));
         }
         return ResponseEntity.ok(rules);
     }
@@ -125,11 +129,6 @@ public class RulesApiController implements RulesApi {
         entity.setDescription(rule.getDescription());
         entity.setEventType(rule.getEventType());
         entity.setPointsToAdd(rule.getPointsToAdd());
-        if (rule.getBadgeName() != null){
-            entity.setBadgeName(rule.getBadgeName());
-        } else {
-            entity.setBadgeName("");
-        }
         return entity;
     }
 
@@ -139,7 +138,28 @@ public class RulesApiController implements RulesApi {
         rule.setDescription(entity.getDescription());
         rule.setEventType(entity.getEventType());
         rule.setPointsToAdd(entity.getPointsToAdd());
-        rule.setBadgeName(entity.getBadgeName());
+        if(entity.getBadge() != null) {
+            rule.setBadgeName(entity.getBadge().getName());
+        } else {
+            rule.setBadgeName("");
+        }
+        rule.setPointsToAdd(entity.getPointsToAdd());
+        rule.setPointScaleId((int)entity.getPointScale().getId());
+        return rule;
+    }
+
+    private RuleInfo toRuleInfo(RuleEntity entity) {
+        RuleInfo rule = new RuleInfo();
+        rule.setId((int) entity.getId());
+        rule.setName(entity.getName());
+        rule.setDescription(entity.getDescription());
+        rule.setEventType(entity.getEventType());
+        rule.setPointsToAdd(entity.getPointsToAdd());
+        if(entity.getBadge() != null) {
+            rule.setBadgeName(entity.getBadge().getName());
+        } else {
+            rule.setBadgeName("");
+        }
         rule.setPointsToAdd(entity.getPointsToAdd());
         rule.setPointScaleId((int)entity.getPointScale().getId());
         return rule;

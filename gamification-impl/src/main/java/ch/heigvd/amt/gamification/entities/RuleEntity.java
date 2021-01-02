@@ -15,7 +15,9 @@ public class RuleEntity implements Serializable {
     private String description;
     private String eventType;
     private Double pointsToAdd;
-    private String badgeName;
+
+    @ManyToOne
+    private BadgeEntity badge;
 
     @ManyToOne
     private PointScaleEntity pointScale;

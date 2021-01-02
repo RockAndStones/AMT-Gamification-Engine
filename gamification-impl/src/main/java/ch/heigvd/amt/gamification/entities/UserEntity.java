@@ -14,7 +14,10 @@ public class UserEntity implements Serializable {
     private long   id;
     private String userAppId;
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(name = "user_badges",
+            joinColumns = { @JoinColumn(name = "fk_user") },
+            inverseJoinColumns = { @JoinColumn(name = "fk_badge") } )
     private List<BadgeEntity> badges;
 
     @ManyToOne
