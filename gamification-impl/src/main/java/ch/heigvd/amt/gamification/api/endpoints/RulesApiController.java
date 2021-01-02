@@ -48,7 +48,7 @@ public class RulesApiController implements RulesApi {
     ServletRequest request;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Rule> createRule(@ApiParam(value = "" ,required=true )  @Valid @RequestBody Rule rule) {
+    public ResponseEntity<String> createRule(@ApiParam(value = "" ,required=true )  @Valid @RequestBody Rule rule) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         if(isNullOrEmpty(rule.getName()) || isNullOrEmpty(rule.getDescription()) ||
@@ -91,16 +91,13 @@ public class RulesApiController implements RulesApi {
         return ResponseEntity.created(location).build();
     }
 
-    @Override
-    public ResponseEntity<Void> removeRule(@ApiParam(value = "",required = true) @PathVariable("id") Integer id) {
+    public ResponseEntity<List<RuleInfo>> getRules(){
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-
-        RuleEntity existingRuleEntity = ruleRepository.findByIdAndAppApiKey(id, app.getApiKey());
-        if(existingRuleEntity == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        List<RuleInfo> rules = new ArrayList<>();
+        for (RuleEntity ruleEntity : ruleRepository.findAllByAppApiKey(app.getApiKey())) {
+            rules.add(toRuleInfo(ruleEntity));
         }
-        ruleRepository.delete(existingRuleEntity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(rules);
     }
 
     @Override
@@ -114,13 +111,16 @@ public class RulesApiController implements RulesApi {
         return ResponseEntity.ok(toRule(existingRuleEntity));
     }
 
-    public ResponseEntity<List<RuleInfo>> getRules(){
+    @Override
+    public ResponseEntity<Void> removeRule(@ApiParam(value = "",required = true) @PathVariable("id") Integer id) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-        List<RuleInfo> rules = new ArrayList<>();
-        for (RuleEntity ruleEntity : ruleRepository.findAllByAppApiKey(app.getApiKey())) {
-            rules.add(toRuleInfo(ruleEntity));
+
+        RuleEntity existingRuleEntity = ruleRepository.findByIdAndAppApiKey(id, app.getApiKey());
+        if(existingRuleEntity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(rules);
+        ruleRepository.delete(existingRuleEntity);
+        return ResponseEntity.ok().build();
     }
 
     private RuleEntity toRuleEntity(Rule rule) {

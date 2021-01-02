@@ -44,7 +44,7 @@ public class EventsApiController implements EventsApi {
 
     @Override
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createEvent(@ApiParam(value = "") @Valid @RequestBody(required = false) Event event) {
+    public ResponseEntity<String> createEvent(@ApiParam(value = "") @Valid @RequestBody(required = false) Event event) {
 
         // Get application entity
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");

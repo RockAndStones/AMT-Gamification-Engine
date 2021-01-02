@@ -24,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class BadgesApiController implements BadgesApi {
     ServletRequest request;
 
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createBadge(@ApiParam("") @Valid @RequestBody(required = false) Badge badge) {
+    public ResponseEntity<String> createBadge(@ApiParam("") @Valid @RequestBody(required = false) Badge badge) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         if (badge.getName() == null   || badge.getDescription() == null ||
@@ -65,8 +66,18 @@ public class BadgesApiController implements BadgesApi {
                 .fromCurrentRequest().path("/{name}")
                 .buildAndExpand(newBadgeEntity.getName()).toUri();
 
+        System.out.println("LOC NAME BADGE: "+ locationName);
 
         return ResponseEntity.created(locationName).build();
+    }
+
+    public ResponseEntity<List<Badge>> getBadges() {
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+        List<Badge> badges = new ArrayList<>();
+        for (BadgeEntity badgeEntity : badgeRepository.findAllByAppApiKey(app.getApiKey())) {
+            badges.add(toBadge(badgeEntity));
+        }
+        return ResponseEntity.ok(badges);
     }
 
     @Override
@@ -78,15 +89,6 @@ public class BadgesApiController implements BadgesApi {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(toBadge(existingBadgeEntity));
-    }
-
-    public ResponseEntity<List<Badge>> getBadges() {
-        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-        List<Badge> badges = new ArrayList<>();
-        for (BadgeEntity badgeEntity : badgeRepository.findAllByAppApiKey(app.getApiKey())) {
-            badges.add(toBadge(badgeEntity));
-        }
-        return ResponseEntity.ok(badges);
     }
 
     @Override

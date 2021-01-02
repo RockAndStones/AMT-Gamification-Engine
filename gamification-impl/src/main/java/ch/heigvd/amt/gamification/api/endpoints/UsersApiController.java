@@ -32,6 +32,17 @@ public class UsersApiController implements UsersApi {
     @Autowired
     ServletRequest request;
 
+    public ResponseEntity<List<User>> getUsers() {
+
+        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
+
+        List<User> users = new ArrayList<>();
+        for (UserEntity userEntity : userRepository.findAllByAppApiKey(app.getApiKey())) {
+            users.add(toUser(userEntity));
+        }
+        return ResponseEntity.ok(users);
+    }
+
     @Override
     public ResponseEntity<UserInfo> getUser(@ApiParam(value = "", required=true) @PathVariable("userAppId") String userAppId) {
 
@@ -42,17 +53,6 @@ public class UsersApiController implements UsersApi {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok(toUserInfo(existingUserEntity));
-    }
-
-    public ResponseEntity<List<User>> getUsers() {
-
-        ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-
-        List<User> users = new ArrayList<>();
-        for (UserEntity userEntity : userRepository.findAllByAppApiKey(app.getApiKey())) {
-            users.add(toUser(userEntity));
-        }
-        return ResponseEntity.ok(users);
     }
 
     private User toUser(UserEntity entity) {
