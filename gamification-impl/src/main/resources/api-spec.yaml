@@ -306,6 +306,8 @@ paths:
                 $ref: '#/components/schemas/UserInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The userAppId of the user given is not found
   /pointscales:
     get:
       description: get the list of all pointscales
@@ -321,8 +323,6 @@ paths:
                   $ref: '#/components/schemas/PointScaleInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
-          description: If badge is null or name sent is not known or badge is unusable
     post:
       description: create a pointscale
       operationId: createPointScale
@@ -333,9 +333,13 @@ paths:
               $ref: '#/components/schemas/PointScale'
       responses:
         '201':
-          description: created
+          description: New pointscale created
+        '400':
+          description: If no stage is sent or points in stage are negative
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If badge is null or name sent is not known or badge is unusable
   /pointscales/{id}:
     get:
       description: get one pointscale, by id
@@ -355,6 +359,8 @@ paths:
                 $ref: '#/components/schemas/PointScale'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the pointscale given is not found
     delete:
       description: delete the specified pointscale
       operationId: removePointScale
@@ -369,6 +375,8 @@ paths:
           description: Pointscale Removed
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the pointscale given is not found
   /statistics/{userAppId}/progression:
     get:
       description: get the user progression by overall points
