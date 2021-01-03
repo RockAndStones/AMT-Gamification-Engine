@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Controller
@@ -29,7 +30,7 @@ public class RankingsApiController implements RankingsApi {
     HttpServletRequest request;
 
     @Override
-    public ResponseEntity<PaginatedPointsRankings> getRankingsByTotalPoints(@Valid Integer page, @Valid Integer pageSize) {
+    public ResponseEntity<PaginatedPointsRankings> getRankingsByTotalPoints(@Min(0) @Valid Integer page, @Min(0) @Valid Integer pageSize) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -37,61 +38,73 @@ public class RankingsApiController implements RankingsApi {
 
         PaginatedPointsRankings p = new PaginatedPointsRankings();
         p.data(userRankings.getContent());
-
-        Pagination pagination = new Pagination();
-        pagination.setNumberOfItems(userRankings.getTotalElements());
-        pagination.setPage(userRankings.getNumber());
-
-        if (userRankings.hasPrevious())
-            pagination.setPrevious(String.format("%s?page=%d&pageSize=%d",
-                    request.getRequestURI(),
-                    userRankings.getNumber() - 1,
-                    userRankings.getTotalElements()));
-
-        if (userRankings.hasNext())
-            pagination.setNext(String.format("%s?page=%d&pageSize=%d",
-                    request.getRequestURI(),
-                    userRankings.getNumber() + 1,
-                    userRankings.getTotalElements()));
-
-        p.setPagination(pagination);
+        p.setPagination(getPagination(userRankings));
 
         return ResponseEntity.ok(p);
     }
 
     @Override
-    public ResponseEntity<PaginatedPointsRankings> getRankingsByEventTypePoints(String eventType) {
+    public ResponseEntity<PaginatedPointsRankings> getRankingsByEventTypePoints(String eventType, @Min(0) @Valid Integer page, @Min(0) @Valid Integer pageSize) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        List<PointsRanking> userRankings = userRepository.userRankingsByTotalPoints(app, eventType);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<PointsRanking> userRankings = userRepository.userRankingsByTotalPoints(app, eventType, pageable);
+
         PaginatedPointsRankings p = new PaginatedPointsRankings();
-        p.data(userRankings);
+        p.data(userRankings.getContent());
+        p.setPagination(getPagination(userRankings));
 
         return ResponseEntity.ok(p);
     }
 
     @Override
-    public ResponseEntity<PaginatedPointsRankings> getRankingsByPointScalesPoints(Long id) {
+    public ResponseEntity<PaginatedPointsRankings> getRankingsByPointScalesPoints(Long id, @Min(0) @Valid Integer page, @Min(0) @Valid Integer pageSize) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
         PointScaleEntity pointScale = pointScaleRepository.findByIdAndAppApiKey(id, app.getApiKey());
         if (pointScale == null)
             return ResponseEntity.notFound().build();
 
-        List<PointsRanking> userRankings = userRepository.userRankingsByTotalPoints(app, pointScale);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<PointsRanking> userRankings = userRepository.userRankingsByTotalPoints(app, pointScale, pageable);
+
         PaginatedPointsRankings p = new PaginatedPointsRankings();
-        p.data(userRankings);
+        p.data(userRankings.getContent());
+        p.setPagination(getPagination(userRankings));
 
         return ResponseEntity.ok(p);
     }
 
     @Override
-    public ResponseEntity<PaginatedBadgesRankings> getRankingsByTotalBadges() {
+    public ResponseEntity<PaginatedBadgesRankings> getRankingsByTotalBadges(@Min(0) @Valid Integer page, @Min(0) @Valid Integer pageSize) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        List<BadgesRanking> userRankings = userRepository.userRankingsByBadges(app);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<BadgesRanking> userRankings = userRepository.userRankingsByBadges(app, pageable);
+
         PaginatedBadgesRankings p = new PaginatedBadgesRankings();
-        p.data(userRankings);
+        p.data(userRankings.getContent());
+        p.setPagination(getPagination(userRankings));
 
         return ResponseEntity.ok(p);
+    }
+
+    public Pagination getPagination(Page<?> page) {
+        Pagination pagination = new Pagination();
+        pagination.setNumberOfItems(page.getTotalElements());
+        pagination.setPage(page.getNumber());
+
+        if (page.hasPrevious())
+            pagination.setPrevious(String.format("%s?page=%d&pageSize=%d",
+                    request.getRequestURI(),
+                    page.getNumber() - 1,
+                    page.getTotalElements()));
+
+        if (page.hasNext())
+            pagination.setNext(String.format("%s?page=%d&pageSize=%d",
+                    request.getRequestURI(),
+                    page.getNumber() + 1,
+                    page.getTotalElements()));
+
+        return pagination;
     }
 }

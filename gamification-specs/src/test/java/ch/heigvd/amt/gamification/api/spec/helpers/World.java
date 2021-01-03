@@ -39,4 +39,8 @@ public class World {
     UserInfo userInfo;
     @Getter @Setter
     EventInfo eventInfo;
+    @Getter @Setter
+    PaginatedPointsRankings pointsRankings;
+    @Getter @Setter
+    PaginatedBadgesRankings badgesRankings;
 }

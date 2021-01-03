@@ -11,8 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
     Iterable<UserEntity> findAllByAppApiKey(String apiKey);
     UserEntity findByUserAppIdAndAppApiKey(String userAppId, String apiKey);
@@ -37,7 +35,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "WHERE ue.app = :app AND pue.pointScale = :pointScale " +
             "GROUP BY ue.userAppId " +
             "ORDER BY COALESCE(SUM(pue.points), 0) DESC")
-    List<PointsRanking> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, @Param("pointScale") PointScaleEntity pointScale);
+    Page<PointsRanking> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, @Param("pointScale") PointScaleEntity pointScale, Pageable p);
 
     @Query(value =
             "SELECT " +
@@ -49,7 +47,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "WHERE re.app = :app AND re.eventType = :eventType " +
             "GROUP BY ue.id, ue.userAppId " +
             "ORDER BY COALESCE(SUM(pue.points), 0) DESC")
-    List<PointsRanking> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, @Param("eventType") String eventType);
+    Page<PointsRanking> userRankingsByTotalPoints(@Param("app") ApplicationEntity app, @Param("eventType") String eventType, Pageable p);
 
     @Query(value =
             "SELECT " +
@@ -57,7 +55,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
             "FROM UserEntity AS ue " +
             "WHERE ue.app = :app " +
             "ORDER BY SIZE(ue.badges)")
-    List<BadgesRanking> userRankingsByBadges(@Param("app") ApplicationEntity app);
+    Page<BadgesRanking> userRankingsByBadges(@Param("app") ApplicationEntity app, Pageable p);
 
     void deleteAllByBadges_id(long id);
 }
