@@ -229,13 +229,15 @@ paths:
                 $ref: '#/components/schemas/Rule'
         '400':
           description: Missing important fields
-        '404':
-          description: If badge name sent is not known or unusable
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If badge name sent is not known or unusable
+        '409':
+          description: Rule with same event type and same point scale id already exists
   /rules/{id}:
     get:
-      description: get one rules, by id
+      description: get one rule, by id
       operationId: getRule
       parameters:
         - in: path
@@ -252,6 +254,8 @@ paths:
                 $ref: '#/components/schemas/Rule'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the rule given is not found
     delete:
       description: delete the specified rule
       operationId: removeRule
@@ -266,6 +270,8 @@ paths:
           description: Rule Removed
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the rule given is not found
   /users:
     get:
       description: get the list of all users
