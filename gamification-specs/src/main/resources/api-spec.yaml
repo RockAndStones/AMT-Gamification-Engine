@@ -335,11 +335,13 @@ paths:
         '201':
           description: New pointscale created
         '400':
-          description: If no stage is sent or points in stage are negative
+          description: If no stage is sent or points in stage are negative or name is empty
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: If badge is null or name sent is not known or badge is unusable
+        '409':
+          description: pointscale name already exists
   /pointscales/{id}:
     get:
       description: get one pointscale, by id
@@ -685,10 +687,13 @@ components:
       type: object
       required:
         - id
+        - name
         - stages
       properties:
         id:
           type: integer
+        name:
+          type: string
         stages:
           type: array
           items:
@@ -697,7 +702,10 @@ components:
       type: object
       required:
         - stages
+        - name
       properties:
+        name:
+          type: string
         stages:
           type: array
           items:

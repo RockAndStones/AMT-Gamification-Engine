@@ -53,8 +53,13 @@ public class PointScalesApiController implements PointscalesApi {
     public ResponseEntity<Void> createPointScale(@ApiParam(value = "" ,required=true )  @Valid @RequestBody PointScale pointScale) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        if(pointScale.getStages() == null || pointScale.getStages().size() <= 0){
+        if(pointScale.getStages() == null || pointScale.getStages().size() <= 0 || pointScale.getName() == null
+           ||pointScale.getName().isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if(pointScaleRepository.findByNameAndAppApiKey(pointScale.getName(), app.getApiKey()) != null){
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         for (Stage stage: pointScale.getStages()) {
@@ -67,7 +72,7 @@ public class PointScalesApiController implements PointscalesApi {
             }
         }
 
-        PointScaleEntity newPointScaleEntity = toPointScaleEntity(pointScale, app.getApiKey());
+        PointScaleEntity newPointScaleEntity = toPointScaleEntity(pointScale);
         newPointScaleEntity.setApp(app);
         pointScaleRepository.save(newPointScaleEntity);
 
@@ -131,6 +136,7 @@ public class PointScalesApiController implements PointscalesApi {
             stages.add(toStage(stageEntity));
         }
         pointScale.setStages(stages);
+        pointScale.setName(pointScaleEntity.getName());
 
         return pointScale;
     }
@@ -143,6 +149,7 @@ public class PointScalesApiController implements PointscalesApi {
         }
         pointScale.setStages(stages);
         pointScale.setId((int) pointScaleEntity.getId());
+        pointScale.setName(pointScaleEntity.getName());
 
         return pointScale;
     }
@@ -162,8 +169,10 @@ public class PointScalesApiController implements PointscalesApi {
         return badge;
     }
 
-    private PointScaleEntity toPointScaleEntity(PointScale pointScale, String apiKey) {
-        return new PointScaleEntity();
+    private PointScaleEntity toPointScaleEntity(PointScale pointScale) {
+        PointScaleEntity pointScaleEntity = new PointScaleEntity();
+        pointScaleEntity.setName(pointScale.getName());
+        return pointScaleEntity;
     }
 
     private StageEntity toStageEntity(Stage stage, String apiKey){
