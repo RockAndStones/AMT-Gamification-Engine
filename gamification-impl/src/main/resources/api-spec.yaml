@@ -2,14 +2,13 @@ openapi: '3.0.3'
 info:
   version: '0.1.0'
   title: Gamification API
-  description: Description
+  description: This is the API that will make your site have a gamification service
 security:
-  #  - bearerAuth: []
   - apiKeyAuth: []
 paths:
   /badges:
     post:
-      description: create badge for the website
+      description: create badge for the application
       operationId: createBadge
       requestBody:
         content:
@@ -18,7 +17,7 @@ paths:
               $ref: '#/components/schemas/Badge'
       responses:
         '201':
-          description: Created
+          description: The badge is created
         '400':
           description: Parameters are empty or null
         '409':
@@ -26,7 +25,7 @@ paths:
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     get:
-      description: get the list of all badges
+      description: get the list of all created badges
       operationId: getBadges
       responses:
         '200':
@@ -56,6 +55,8 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Badge'
+        '404':
+          description: The badge is not found
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     put:
@@ -81,15 +82,19 @@ paths:
         description: Pass an empty body if you would like to only modify the usable value
       responses:
         '200':
-          description: success
+          description: Badge modified
           content:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Badge'
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
         '400':
           description: Request body was incorrect
+        '404':
+          description: The badge is not found
+        '409':
+          description: The new name of the badge is already used
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       description: delete the specified badge
       operationId: removeBadge
@@ -102,6 +107,8 @@ paths:
       responses:
         '200':
           description: Badge Removed
+        '404':
+          description: The badge is not found
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /events:
