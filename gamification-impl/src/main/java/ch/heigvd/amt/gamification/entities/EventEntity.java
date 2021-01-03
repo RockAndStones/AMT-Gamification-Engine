@@ -19,7 +19,6 @@ public class EventEntity implements Serializable {
 
     private String userAppId;
     private String eventType;
-//    private Object eventProperties;
 
     private OffsetDateTime timestamp;
 

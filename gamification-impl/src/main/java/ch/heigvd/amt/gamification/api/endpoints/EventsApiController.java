@@ -52,18 +52,15 @@ public class EventsApiController implements EventsApi {
             // Get application entity
             ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-
-                // Create the user if not present in the repository
-                UserEntity userEntity = userRepository.findByUserAppIdAndAppApiKey(event.getUserAppId(), app.getApiKey());
-                if (userEntity == null) {
-                    userEntity = new UserEntity();
-                    userEntity.setUserAppId(event.getUserAppId());
-                    userEntity.setBadges(new ArrayList<>());
-                    userEntity.setApp(app);
-                    userRepository.save(userEntity);
-                }
-
-
+            // Create the user if not present in the repository
+            UserEntity userEntity = userRepository.findByUserAppIdAndAppApiKey(event.getUserAppId(), app.getApiKey());
+            if (userEntity == null) {
+                userEntity = new UserEntity();
+                userEntity.setUserAppId(event.getUserAppId());
+                userEntity.setBadges(new ArrayList<>());
+                userEntity.setApp(app);
+                userRepository.save(userEntity);
+            }
 
             // Create and save the event entity
             EventEntity newEventEntity = toEventEntity(event);
@@ -111,7 +108,6 @@ public class EventsApiController implements EventsApi {
         entity.setUserAppId(event.getUserAppId());
         entity.setTimestamp(event.getTimestamp());
         entity.setEventType(event.getEventType());
-//        entity.setEventProperties(event.getEventProperties());
         return entity;
     }
 
@@ -120,7 +116,6 @@ public class EventsApiController implements EventsApi {
         event.setUserAppId(entity.getUserAppId());
         event.setTimestamp(entity.getTimestamp());
         event.setEventType(entity.getEventType());
-//        event.setEventProperties(entity.getEventProperties());
         return event;
     }
 

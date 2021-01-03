@@ -20,10 +20,10 @@ paths:
           description: The badge is created
         '400':
           description: Parameters are empty or null
-        '409':
-          description: Badge already exists
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '409':
+          description: Badge already exists
     get:
       description: get the list of all created badges
       operationId: getBadges
@@ -55,10 +55,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Badge'
-        '404':
-          description: The badge is not found
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The badge is not found
     put:
       description: update a badge, by name
       operationId: putBadge
@@ -89,12 +89,12 @@ paths:
                 $ref: '#/components/schemas/Badge'
         '400':
           description: Request body was incorrect
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: The badge is not found
         '409':
           description: The new name of the badge is already used
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
     delete:
       description: delete the specified badge
       operationId: removeBadge
@@ -107,10 +107,10 @@ paths:
       responses:
         '200':
           description: Badge Removed
-        '404':
-          description: The name of the badge given is not found
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The name of the badge given is not found
   /events:
     post:
       description: create a user event
@@ -158,6 +158,8 @@ paths:
                 $ref: '#/components/schemas/Event'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the event given is not found
   /applications:
     post:
       description: create a new application
@@ -171,9 +173,11 @@ paths:
       responses:
         '201':
           description: New application created
+        '409':
+          description: If application name already exists
   /applications/{name}:
     get:
-      description: get one application, by name
+      description: get one application, by name. This endpoint will give you the api key of your application
       operationId: getApplication
       parameters:
         - in: path
@@ -182,8 +186,8 @@ paths:
             type: string
           required: true
       responses:
-        '201':
-          description: created
+        '200':
+          description: success
           content:
             'application/json':
               schema:
@@ -556,8 +560,6 @@ components:
           format: date-time
         eventType:
           type: string
-        eventProperties:
-          type: object
     EventInfo:
       type: object
       properties:

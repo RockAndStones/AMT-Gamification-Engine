@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -25,7 +26,10 @@ public class ApplicationsApiController implements ApplicationsApi {
 
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createApplication(@ApiParam(value = "", required = true) @Valid @RequestBody NewApplication newApplication) {
-        // todo: check conditions (unique name eventually, user authentication)
+        if (applicationRepository.findByName(newApplication.getName()) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+
         ApplicationEntity appEntity = new ApplicationEntity();
         appEntity.setApiKey(ApplicationEntity.generateApiKey());
         appEntity.setName(newApplication.getName());
