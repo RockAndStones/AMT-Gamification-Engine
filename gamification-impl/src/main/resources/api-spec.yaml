@@ -108,7 +108,7 @@ paths:
         '200':
           description: Badge Removed
         '404':
-          description: The badge is not found
+          description: The name of the badge given is not found
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /events:
