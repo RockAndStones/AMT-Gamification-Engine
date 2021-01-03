@@ -593,6 +593,11 @@ components:
           type: string
         description:
           type: string
+    BadgeName:
+      type: object
+      properties:
+        name:
+          type: string
     NewApplication:
       type: object
       properties:
@@ -703,7 +708,7 @@ components:
           type: number
           format: double
         badge:
-          $ref: '#/components/schemas/Badge'
+          $ref: '#/components/schemas/BadgeName'
     PaginatedPointsRankings:
       type: object
       properties:
@@ -735,7 +740,7 @@ components:
       properties:
         userId:
           type: string
-        points:
+        badges:
           type: int
     Pagination:
       type: object

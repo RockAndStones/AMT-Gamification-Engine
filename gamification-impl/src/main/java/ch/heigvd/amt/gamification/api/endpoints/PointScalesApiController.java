@@ -150,15 +150,14 @@ public class PointScalesApiController implements PointscalesApi {
     private Stage toStage(StageEntity stageEntity){
         Stage stage = new Stage();
         stage.setPoints(stageEntity.getPoints());
-        stage.setBadge(toBadge(stageEntity.getBadge()));
+        stage.setBadge(toBadgeName(stageEntity.getBadge()));
 
         return stage;
     }
 
-    private Badge toBadge(BadgeEntity entity) {
-        Badge badge = new Badge();
+    private BadgeName toBadgeName(BadgeEntity entity) {
+        BadgeName badge = new BadgeName();
         badge.setName(entity.getName());
-        badge.setDescription(entity.getDescription());
 
         return badge;
     }
