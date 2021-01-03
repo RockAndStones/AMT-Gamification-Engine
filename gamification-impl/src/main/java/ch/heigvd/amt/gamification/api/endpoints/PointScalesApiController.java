@@ -55,7 +55,7 @@ public class PointScalesApiController implements PointscalesApi {
 
         if(pointScale.getStages() == null || pointScale.getStages().size() <= 0 || pointScale.getName() == null
            ||pointScale.getName().isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         if(pointScaleRepository.findByNameAndAppApiKey(pointScale.getName(), app.getApiKey()) != null){
@@ -65,10 +65,10 @@ public class PointScalesApiController implements PointscalesApi {
         for (Stage stage: pointScale.getStages()) {
             BadgeEntity badge = badgeRepository.findByNameAndAppApiKey(stage.getBadge().getName(), app.getApiKey());
             if(stage.getPoints() < 0){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             } else if(stage.getBadge() == null || badge == null
                     || !badge.getUsable()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
         }
 

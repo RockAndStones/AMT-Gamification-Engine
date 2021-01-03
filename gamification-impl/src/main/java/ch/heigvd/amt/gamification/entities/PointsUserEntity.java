@@ -14,7 +14,6 @@ public class PointsUserEntity implements Serializable {
 
     double points;
 
-    // TODO better implementation of pk and fk
     @ManyToOne
     private PointScaleEntity pointScale;
 
