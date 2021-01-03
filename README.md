@@ -8,9 +8,12 @@
 - [Cucumber Tests](#cucumber-tests)
     - [Prerequisites](#prerequisites-1)
     - [Run the tests](#run-the-tests)
+- [Load Tests](#load-tests)
+    - [Prerequisites](#prerequisites-2)
+    - [Run the tests](#run-the-tests-1)
 
 ## Introduction
-As part of the course AMT we were asked to create a Spring Boot API to offer a gamification functionality for an application. 
+As part of the course AMT we were asked to create a Spring Boot API to offer a gamification functionality for an application. In this project we used Cucumber and JMeter to test our API.
 
 ## Deployment
 ### Prerequisites
@@ -22,7 +25,7 @@ Clone the repository.
 ```
 git clone https://github.com/RockAndStones/AMT-Gamification-Engine.git
 ```
-Open a terminal in the docker folder of the cloned repository and run the following command. 
+Open a terminal in the docker folder of the cloned repository and run the following command.
 ```
 docker-compose up -d
 ```
@@ -43,3 +46,17 @@ git clone https://github.com/RockAndStones/AMT-Gamification-Engine.git
 ```
 
 And to run the `run_cucumber_tests.sh` script from the cloned root folder.
+
+## Load Tests
+### Prerequisites
+To run the tests you need to have installed :
+- `git`
+- `JMeter`
+### Run the tests
+To run the tests you need to clone the repository.
+
+```
+git clone https://github.com/RockAndStones/AMT-Gamification-Engine.git
+```
+
+And then open the JMeter application and open the file `load-tests.jmx` in the `load-tests` folder.
