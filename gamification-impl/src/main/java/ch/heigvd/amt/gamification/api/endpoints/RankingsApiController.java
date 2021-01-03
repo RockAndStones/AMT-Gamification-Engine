@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -62,7 +64,7 @@ public class RankingsApiController implements RankingsApi {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
         PointScaleEntity pointScale = pointScaleRepository.findByIdAndAppApiKey(id, app.getApiKey());
         if (pointScale == null)
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<PointsRanking> userRankings = userRepository.userRankingsByTotalPoints(app, pointScale, pageable);

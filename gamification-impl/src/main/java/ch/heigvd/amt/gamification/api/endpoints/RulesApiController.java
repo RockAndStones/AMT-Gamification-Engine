@@ -53,27 +53,27 @@ public class RulesApiController implements RulesApi {
 
         if(isNullOrEmpty(rule.getName()) || isNullOrEmpty(rule.getDescription()) ||
                 isNullOrEmpty(rule.getEventType()) || rule.getPointsToAdd() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         PointScaleEntity pointScaleEntity = pointScaleRepository.findByIdAndAppApiKey(rule.getPointScaleId(), app.getApiKey());
 
         if(pointScaleEntity == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         BadgeEntity badgeEntity = null;
         if(rule.getBadgeName() != null) {
             badgeEntity = badgeRepository.findByNameAndAppApiKey(rule.getBadgeName(), app.getApiKey());
             if (badgeEntity == null ||
                 !badgeEntity.getUsable()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
         }
 
         // If a rule has the same apikey, same event type and same point scale id we refuse the creation
         // Because this could become a big problem and rules could become unmanageable
         if(ruleRepository.findByPointScaleIdAndEventTypeAndAppApiKey(rule.getPointScaleId(), rule.getEventType(), app.getApiKey()) != null){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         RuleEntity newRuleEntity = toRuleEntity(rule);

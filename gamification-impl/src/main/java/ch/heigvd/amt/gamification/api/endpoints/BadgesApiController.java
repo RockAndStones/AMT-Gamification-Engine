@@ -51,10 +51,10 @@ public class BadgesApiController implements BadgesApi {
 
         if (badge.getName() == null   || badge.getDescription() == null ||
             badge.getName().isEmpty() || badge.getDescription().isEmpty())
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         if(badgeRepository.findByNameAndAppApiKey(badge.getName(), app.getApiKey()) != null){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         BadgeEntity newBadgeEntity = toBadgeEntity(badge);
@@ -94,7 +94,6 @@ public class BadgesApiController implements BadgesApi {
                                           @ApiParam(value = "If the badge has to be desactivated pass this value with false",defaultValue = "true") @Valid @RequestParam(value = "usable",required = false,defaultValue = "true") Boolean usable,
                                           @ApiParam("") @Valid @RequestBody(required = false) Badge badge) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
-        // TODO Better solution ?
         if(badge == null || badge.getName() == null || badge.getDescription() == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

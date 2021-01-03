@@ -11,8 +11,10 @@ import ch.heigvd.amt.gamification.repositories.PointScaleRepository;
 import ch.heigvd.amt.gamification.repositories.PointsHistoryRepository;
 import ch.heigvd.amt.gamification.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.ServletRequest;
 import java.util.stream.Collectors;
@@ -36,7 +38,7 @@ public class StatisticsApiController implements StatisticsApi {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
         UserEntity u = userRepository.findByUserAppIdAndAppApiKey(userAppId, app.getApiKey());
         if (u == null)
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         PointsProgression pointsProgression = new PointsProgression();
         pointsProgression.setUserAppId(userAppId);
@@ -53,11 +55,11 @@ public class StatisticsApiController implements StatisticsApi {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
         UserEntity u = userRepository.findByUserAppIdAndAppApiKey(userAppId, app.getApiKey());
         if (u == null)
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         PointScaleEntity p = pointScaleRepository.findByIdAndAppApiKey(pointScaleId, app.getApiKey());
         if (p == null)
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         PointsProgression pointsProgression = new PointsProgression();
         pointsProgression.setUserAppId(userAppId);

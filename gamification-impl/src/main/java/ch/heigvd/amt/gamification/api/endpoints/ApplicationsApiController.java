@@ -46,7 +46,7 @@ public class ApplicationsApiController implements ApplicationsApi {
     public ResponseEntity<Application> getApplication(@ApiParam(required = true) @PathVariable("name") String name) {
         ApplicationEntity appEntity = applicationRepository.findByName(name);
         if (appEntity == null)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         Application app = new Application();
         app.setName(appEntity.getName());
