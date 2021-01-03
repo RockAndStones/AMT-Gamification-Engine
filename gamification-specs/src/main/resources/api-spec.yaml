@@ -1,15 +1,14 @@
 openapi: '3.0.3'
 info:
-  version: '0.1.0'
+  version: '0.2.0'
   title: Gamification API
-  description: Description
+  description: This is the API that will make your site have a gamification service
 security:
-  #  - bearerAuth: []
   - apiKeyAuth: []
 paths:
   /badges:
     post:
-      description: create badge for the website
+      description: create badge for the application
       operationId: createBadge
       requestBody:
         content:
@@ -18,15 +17,15 @@ paths:
               $ref: '#/components/schemas/Badge'
       responses:
         '201':
-          description: Created
+          description: The badge is created
         '400':
           description: Parameters are empty or null
-        '409':
-          description: Badge already exists
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '409':
+          description: Badge already exists
     get:
-      description: get the list of all badges
+      description: get the list of all created badges
       operationId: getBadges
       responses:
         '200':
@@ -58,6 +57,8 @@ paths:
                 $ref: '#/components/schemas/Badge'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The badge is not found
     put:
       description: update a badge, by name
       operationId: putBadge
@@ -81,15 +82,19 @@ paths:
         description: Pass an empty body if you would like to only modify the usable value
       responses:
         '200':
-          description: success
+          description: Badge modified
           content:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Badge'
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
         '400':
           description: Request body was incorrect
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The badge is not found
+        '409':
+          description: The new name of the badge is already used
     delete:
       description: delete the specified badge
       operationId: removeBadge
@@ -104,6 +109,8 @@ paths:
           description: Badge Removed
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The name of the badge given is not found
   /events:
     post:
       description: create a user event
@@ -115,7 +122,7 @@ paths:
               $ref: '#/components/schemas/Event'
       responses:
         '201':
-          description: created
+          description: The event is created
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     get:
@@ -151,6 +158,8 @@ paths:
                 $ref: '#/components/schemas/Event'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the event given is not found
   /applications:
     post:
       description: create a new application
@@ -164,9 +173,11 @@ paths:
       responses:
         '201':
           description: New application created
+        '409':
+          description: If application name already exists
   /applications/{name}:
     get:
-      description: get one application, by name
+      description: get one application, by name. This endpoint will give you the api key of your application
       operationId: getApplication
       parameters:
         - in: path
@@ -175,8 +186,8 @@ paths:
             type: string
           required: true
       responses:
-        '201':
-          description: created
+        '200':
+          description: success
           content:
             'application/json':
               schema:
@@ -218,13 +229,15 @@ paths:
                 $ref: '#/components/schemas/Rule'
         '400':
           description: Missing important fields
-        '404':
-          description: If badge name sent is not known or unusable
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If badge name sent is not known or unusable
+        '409':
+          description: Rule with same event type and same point scale id already exists
   /rules/{id}:
     get:
-      description: get one rules, by id
+      description: get one rule, by id
       operationId: getRule
       parameters:
         - in: path
@@ -241,6 +254,8 @@ paths:
                 $ref: '#/components/schemas/Rule'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the rule given is not found
     delete:
       description: delete the specified rule
       operationId: removeRule
@@ -255,6 +270,8 @@ paths:
           description: Rule Removed
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the rule given is not found
   /users:
     get:
       description: get the list of all users
@@ -289,6 +306,8 @@ paths:
                 $ref: '#/components/schemas/UserInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The userAppId of the user given is not found
   /pointscales:
     get:
       description: get the list of all pointscales
@@ -304,8 +323,6 @@ paths:
                   $ref: '#/components/schemas/PointScaleInfo'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
-          description: If badge is null or name sent is not known or badge is unusable
     post:
       description: create a pointscale
       operationId: createPointScale
@@ -316,9 +333,13 @@ paths:
               $ref: '#/components/schemas/PointScale'
       responses:
         '201':
-          description: created
+          description: New pointscale created
+        '400':
+          description: If no stage is sent or points in stage are negative
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: If badge is null or name sent is not known or badge is unusable
   /pointscales/{id}:
     get:
       description: get one pointscale, by id
@@ -338,6 +359,8 @@ paths:
                 $ref: '#/components/schemas/PointScale'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the pointscale given is not found
     delete:
       description: delete the specified pointscale
       operationId: removePointScale
@@ -352,6 +375,8 @@ paths:
           description: Pointscale Removed
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The id of the pointscale given is not found
   /statistics/{userAppId}/progression:
     get:
       description: get the user progression by overall points
@@ -371,6 +396,8 @@ paths:
                 $ref: '#/components/schemas/PointsProgression'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The userAppId of the user given is not found
   /statistics/{userAppId}/progression/{pointScaleId}:
     get:
       description: get the user progression by overall points
@@ -396,6 +423,8 @@ paths:
                 $ref: '#/components/schemas/PointsProgression'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The userAppId of the user given is not found or the id of the pointscale is not found
   /rankings/byBadges:
     get:
       description: get the user rankings by total number of badges
@@ -549,8 +578,6 @@ components:
           format: date-time
         eventType:
           type: string
-        eventProperties:
-          type: object
     EventInfo:
       type: object
       properties:
@@ -569,6 +596,11 @@ components:
         name:
           type: string
         description:
+          type: string
+    BadgeName:
+      type: object
+      properties:
+        name:
           type: string
     NewApplication:
       type: object
@@ -680,7 +712,7 @@ components:
           type: number
           format: double
         badge:
-          $ref: '#/components/schemas/Badge'
+          $ref: '#/components/schemas/BadgeName'
     PaginatedPointsRankings:
       type: object
       properties:
@@ -712,7 +744,7 @@ components:
       properties:
         userId:
           type: string
-        points:
+        badges:
           type: int
     Pagination:
       type: object

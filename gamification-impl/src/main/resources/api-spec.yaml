@@ -396,6 +396,8 @@ paths:
                 $ref: '#/components/schemas/PointsProgression'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The userAppId of the user given is not found
   /statistics/{userAppId}/progression/{pointScaleId}:
     get:
       description: get the user progression by overall points
@@ -421,6 +423,8 @@ paths:
                 $ref: '#/components/schemas/PointsProgression'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: The userAppId of the user given is not found or the id of the pointscale is not found
   /rankings/byBadges:
     get:
       description: get the user rankings by total number of badges
