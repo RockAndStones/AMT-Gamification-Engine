@@ -53,8 +53,13 @@ public class PointScalesApiController implements PointscalesApi {
     public ResponseEntity<Void> createPointScale(@ApiParam(value = "" ,required=true )  @Valid @RequestBody PointScale pointScale) {
         ApplicationEntity app = (ApplicationEntity) request.getAttribute("ApplicationEntity");
 
-        if(pointScale.getStages() == null || pointScale.getStages().size() <= 0){
+        if(pointScale.getStages() == null || pointScale.getStages().size() <= 0 || pointScale.getName() == null
+           ||pointScale.getName().isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if(pointScaleRepository.findByNameAndAppApiKey(pointScale.getName(), app.getApiKey()) != null){
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         for (Stage stage: pointScale.getStages()) {
@@ -62,12 +67,12 @@ public class PointScalesApiController implements PointscalesApi {
             if(stage.getPoints() < 0){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             } else if(stage.getBadge() == null || badge == null
-            || !badge.getUsable()) {
+                    || !badge.getUsable()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         }
 
-        PointScaleEntity newPointScaleEntity = toPointScaleEntity(pointScale, app.getApiKey());
+        PointScaleEntity newPointScaleEntity = toPointScaleEntity(pointScale);
         newPointScaleEntity.setApp(app);
         pointScaleRepository.save(newPointScaleEntity);
 
@@ -78,7 +83,6 @@ public class PointScalesApiController implements PointscalesApi {
             stageRepository.save(newStageEntity);
         }
 
-        //TODO Que faut-il retourner ??
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newPointScaleEntity.getId()).toUri();
@@ -132,6 +136,7 @@ public class PointScalesApiController implements PointscalesApi {
             stages.add(toStage(stageEntity));
         }
         pointScale.setStages(stages);
+        pointScale.setName(pointScaleEntity.getName());
 
         return pointScale;
     }
@@ -144,6 +149,7 @@ public class PointScalesApiController implements PointscalesApi {
         }
         pointScale.setStages(stages);
         pointScale.setId((int) pointScaleEntity.getId());
+        pointScale.setName(pointScaleEntity.getName());
 
         return pointScale;
     }
@@ -151,21 +157,22 @@ public class PointScalesApiController implements PointscalesApi {
     private Stage toStage(StageEntity stageEntity){
         Stage stage = new Stage();
         stage.setPoints(stageEntity.getPoints());
-        stage.setBadge(toBadge(stageEntity.getBadge()));
+        stage.setBadge(toBadgeName(stageEntity.getBadge()));
 
         return stage;
     }
 
-    private Badge toBadge(BadgeEntity entity) {
-        Badge badge = new Badge();
+    private BadgeName toBadgeName(BadgeEntity entity) {
+        BadgeName badge = new BadgeName();
         badge.setName(entity.getName());
-        badge.setDescription(entity.getDescription());
 
         return badge;
     }
 
-    private PointScaleEntity toPointScaleEntity(PointScale pointScale, String apiKey) {
-        return new PointScaleEntity();
+    private PointScaleEntity toPointScaleEntity(PointScale pointScale) {
+        PointScaleEntity pointScaleEntity = new PointScaleEntity();
+        pointScaleEntity.setName(pointScale.getName());
+        return pointScaleEntity;
     }
 
     private StageEntity toStageEntity(Stage stage, String apiKey){
@@ -176,3 +183,4 @@ public class PointScalesApiController implements PointscalesApi {
         return stageEntity;
     }
 }
+

@@ -42,6 +42,13 @@ Feature: Basic operations for point scale
     When I POST the pointscale payload to the /pointscales endpoint
     Then I receive a 201 status code
 
+  Scenario: create a point scale with same name (conflict)
+    Given I have a badge payload
+    Given I have a stage payload
+    Given I have a pointscale payload
+    When I POST the pointscale payload to the /pointscales endpoint
+    Then I receive a 409 status code
+
   Scenario: get the list of point scale
     When I send a GET to the /pointscales endpoint
     Then I receive a 200 status code

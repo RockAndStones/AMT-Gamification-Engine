@@ -188,6 +188,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
+  &quot;name&quot;: &quot;JMeterPointScale&quot;,&#xd;
   &quot;stages&quot;: [&#xd;
     {&#xd;
       &quot;badge&quot;: {&#xd;
@@ -559,6 +560,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
+  &quot;name&quot;: &quot;FirstPointScale&quot;,	&#xd;
   &quot;stages&quot;: [&#xd;
     {&#xd;
       &quot;badge&quot;: {&#xd;
@@ -614,6 +616,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
+  &quot;name&quot;: &quot;SecondPointScale&quot;,&#xd;
   &quot;stages&quot;: [&#xd;
     {&#xd;
       &quot;badge&quot;: {&#xd;
