@@ -30,7 +30,7 @@ public class SwaggerDocumentationConfig {
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("Gamification API")
-            .description("todo")
+            .description("This is the API that will make your site have a gamification service")
             .version("0.2.0")
             .build();
     }

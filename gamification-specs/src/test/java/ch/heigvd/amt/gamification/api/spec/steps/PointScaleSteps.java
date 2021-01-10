@@ -35,12 +35,13 @@ public class PointScaleSteps {
         List<Stage> stages = new ArrayList<>();
         stages.add(world.getStage());
         world.setPointScale(new ch.heigvd.amt.gamification.api.dto.PointScale()
+                .name("PointScaleTest")
                 .stages(stages));
     }
 
     @Given("I have a pointscale payload without stages")
     public void iHaveAPointscalePayloadWithoutStages() {
-        world.setPointScale(new ch.heigvd.amt.gamification.api.dto.PointScale());
+        world.setPointScale(new ch.heigvd.amt.gamification.api.dto.PointScale().name("PointScaleTestWithoutStages"));
     }
 
     @When("I POST the pointscale payload to the /pointscales endpoint$")
@@ -78,7 +79,6 @@ public class PointScaleSteps {
     @When("I send a GET to the /pointscales/\\{id} endpoint$")
     public void iSendAGETToThePointscalesIdEndpoint() {
         try {
-            System.out.println(world.getPointScaleInfo().getId());
             environment.setLastApiResponse(api.getPointScaleWithHttpInfo(world.getPointScaleInfo().getId()));
             environment.processApiResponse(environment.getLastApiResponse());
             PointScale pointScale = (PointScale) environment.getLastApiResponse().getData();
