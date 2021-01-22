@@ -54,7 +54,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
                 "new ch.heigvd.amt.gamification.model.CustomBadgesRanking(ue.userAppId, SIZE(ue.badges)) " +
             "FROM UserEntity AS ue " +
             "WHERE ue.app = :app " +
-            "ORDER BY SIZE(ue.badges)")
+            "ORDER BY SIZE(ue.badges) DESC")
     Page<BadgesRanking> userRankingsByBadges(@Param("app") ApplicationEntity app, Pageable p);
 
     void deleteAllByBadges_id(long id);
