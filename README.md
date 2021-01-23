@@ -32,6 +32,7 @@ docker-compose up -d
 You will then be able to access the API at the url http://localhost:8080 when docker-compose is up and running.
 
 ## Cucumber Tests
+With this tests we can check that the all the endpoints are working as wanted by checking the http codes returned and the different payloads returned in some cases. All the different actions available on the endpoints (GET, POST, PUT, DELETE) were tested.
 ### Prerequisites
 To run the tests you need to have installed :
 - `git`
@@ -47,7 +48,10 @@ git clone https://github.com/RockAndStones/AMT-Gamification-Engine.git
 
 And to run the `run_cucumber_tests.sh` script from the cloned root folder.
 
+Remark : To run the tests you must have an instance of the gamification-engine running.
+
 ## Load Tests
+With these tests we check that we have no concurrency problems when handling events or when creating multiple badges, pointscales or even rules.
 ### Prerequisites
 To run the tests you need to have installed :
 - `git`
@@ -60,3 +64,5 @@ git clone https://github.com/RockAndStones/AMT-Gamification-Engine.git
 ```
 
 And then open the JMeter application and open the file `load-tests.jmx` in the `load-tests` folder.
+
+Remark : To run the tests you must have an instance of the gamification-engine running.
